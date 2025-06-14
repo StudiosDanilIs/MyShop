@@ -1,7 +1,11 @@
-// js/admin.js
+// MYSHOP/js/admin.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Elementos de login ELIMINADOS
+    const adminKeyInput = document.getElementById('adminKeyInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginMessage = document.getElementById('loginMessage');
+    const adminPanel = document.getElementById('admin-panel');
+    const loginSection = document.getElementById('login-section');
 
     const productForm = document.getElementById('productForm');
     const statusMessage = document.getElementById('statusMessage');
@@ -9,29 +13,149 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submitBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
 
+    const productNameInput = document.getElementById('nombre');
+    const productIdInput = document.getElementById('id');
+    const productTypeSelect = document.getElementById('tipo');
+    const productCategoryInput = document.getElementById('categoria');
+
+    // Elementos para subir archivos
+    const fileUploadInput = document.getElementById('fileUpload');
+    const fileImagePreviewContainer = document.getElementById('fileImagePreview');
+    let selectedFiles = []; // Array para almacenar los archivos seleccionados para subir
+
+    // Elementos para URLs directas de imagen
+    const imageUrlsInput = document.getElementById('imageUrls');
+    const urlImagePreviewContainer = document.getElementById('urlImagePreview');
+
+
     let editingProductId = null; // Para saber si estamos editando o añadiendo
 
     // Función para mostrar mensajes de estado
     function showMessage(message, type = 'success') {
         statusMessage.textContent = message;
         statusMessage.className = `message ${type}`;
-        setTimeout(() => statusMessage.textContent = '', 5000); // Limpiar mensaje después de 5 segundos
+        setTimeout(() => statusMessage.textContent = '', 5000);
     }
 
-    // Lógica de Inicio de Sesión ELIMINADA
+    // --- Lógica de Inicio de Sesión ---
+    loginBtn.addEventListener('click', () => {
+        const enteredKey = adminKeyInput.value.trim();
+        if (enteredKey) {
+            localStorage.setItem('adminKey', enteredKey); // Guardar la clave en localStorage
+            loginMessage.textContent = 'Clave guardada. Intentando cargar productos...';
+            loginMessage.className = 'message success';
+            loadProducts(); // Intentar cargar productos (que ahora enviará la clave)
+        } else {
+            loginMessage.textContent = 'Por favor, ingresa una clave.';
+            loginMessage.className = 'message error';
+        }
+    });
+
+    // --- Generación de ID automático ---
+    productNameInput.addEventListener('input', () => {
+        if (!editingProductId) { // Solo si no estamos editando un producto existente
+            const name = productNameInput.value.trim();
+            const generatedId = name
+                .toLowerCase()
+                .replace(/ /g, '-')     // Reemplaza espacios con guiones
+                .replace(/[^\w-]+/g, ''); // Elimina caracteres no alfanuméricos ni guiones
+            productIdInput.value = generatedId;
+        }
+    });
+
+    // --- Previsualización de imágenes subidas desde archivo ---
+    fileUploadInput.addEventListener('change', (event) => {
+        fileImagePreviewContainer.innerHTML = ''; // Limpiar previsualizaciones anteriores
+        selectedFiles = Array.from(event.target.files).slice(0, 5); // Limitar a 5 archivos
+
+        selectedFiles.forEach(file => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    fileImagePreviewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // Si hay archivos, limpiar las URLs para evitar conflictos
+        if (selectedFiles.length > 0) {
+            imageUrlsInput.value = '';
+            urlImagePreviewContainer.innerHTML = '';
+        }
+    });
+
+    // --- Previsualización de imágenes por URL ---
+    imageUrlsInput.addEventListener('input', () => {
+        urlImagePreviewContainer.innerHTML = '';
+        const urls = imageUrlsInput.value.split(',').map(url => url.trim()).filter(url => url !== '');
+        urls.forEach(url => {
+            if (url) {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Preview';
+                urlImagePreviewContainer.appendChild(img);
+            }
+        });
+        // Si se escriben URLs, limpiar los archivos seleccionados
+        if (imageUrlsInput.value.trim() !== '') {
+            fileUploadInput.value = '';
+            fileImagePreviewContainer.innerHTML = '';
+            selectedFiles = [];
+        }
+    });
+
 
     // --- Funciones CRUD ---
 
     // Función para realizar peticiones a la API
-    async function apiRequest(method, endpoint, data = null) {
+    async function apiRequest(method, endpoint, data = null, files = []) {
+        const adminKey = localStorage.getItem('adminKey');
+        if (!adminKey && method !== 'GET') { // GET no requiere clave
+            showMessage('Error: Clave de administrador no encontrada. Por favor, inicia sesión.', 'error');
+            return null;
+        }
+
+        let bodyToSend;
+        let contentType;
+
+        if (files.length > 0) { // Si hay archivos para subir, usa FormData
+            const formData = new FormData();
+            // Añadir campos de texto al FormData
+            for (const key in data) {
+                if (Array.isArray(data[key])) { 
+                    formData.append(key, JSON.stringify(data[key])); // Convertir arrays a JSON string
+                } else {
+                    formData.append(key, data[key]);
+                }
+            }
+            // Añadir los archivos al FormData
+            files.forEach((file, index) => {
+                formData.append(`image${index}`, file, file.name); // 'imageX' es el fieldname en el backend
+            });
+            bodyToSend = formData;
+            // Cuando usas FormData, no establezcas Content-Type, el navegador lo hace automáticamente
+            contentType = null; 
+        } else { // Si no hay archivos, envía JSON normal
+            bodyToSend = JSON.stringify(data);
+            contentType = 'application/json';
+        }
+
         const options = {
             method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                // 'X-Admin-Key' ELIMINADO
-            },
-            body: data ? JSON.stringify(data) : null
+            headers: {}, // Las cabeceras se añadirán condicionalmente
+            body: bodyToSend
         };
+
+        if (contentType) { 
+            options.headers['Content-Type'] = contentType;
+        }
+
+        if (adminKey && method !== 'GET') {
+            options.headers['X-Admin-Key'] = adminKey;
+        }
 
         try {
             const response = await fetch(`/.netlify/functions/products${endpoint}`, options);
@@ -51,8 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cargar productos
     async function loadProducts() {
-        // Lógica de validación de clave ELIMINADA. El panel siempre es visible.
-        const products = await apiRequest('GET', '', null);
+        // Solo intenta mostrar el panel si hay una clave guardada
+        if (localStorage.getItem('adminKey')) {
+            adminPanel.style.display = 'block';
+            loginSection.style.display = 'none';
+        } else {
+            adminPanel.style.display = 'none';
+            loginSection.style.display = 'block';
+            return; // No cargar productos si no hay sesión
+        }
+
+        const products = await apiRequest('GET', ''); 
         if (products) {
             productList.innerHTML = '';
             if (products.length === 0) {
@@ -65,6 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div><strong>ID:</strong> ${product.id}</div>
                         <div><strong>Nombre:</strong> ${product.nombre}</div>
                         <div><strong>Precio:</strong> S/${product.precio.toFixed(2)}</div>
+                        <div><strong>Tipo:</strong> ${product.tipo || 'General'}</div>
+                        <div><strong>Categoría:</strong> ${product.categoria || 'N/A'}</div>
                         <div class="actions">
                             <button class="edit-btn" data-id="${product.id}">Editar</button>
                             <button class="delete-btn" data-id="${product.id}">Eliminar</button>
@@ -80,67 +215,106 @@ document.addEventListener('DOMContentLoaded', () => {
     productForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const product = {
-            id: document.getElementById('id').value,
-            nombre: document.getElementById('nombre').value,
+        // Datos del formulario
+        const productData = {
+            id: productIdInput.value, // Este ID se usará en PUT, en POST el backend lo genera
+            nombre: productNameInput.value,
             descripcion: document.getElementById('descripcion').value,
             descripcion_corta: document.getElementById('descripcion_corta').value,
             precio: parseFloat(document.getElementById('precio').value),
             precioOriginal: document.getElementById('precioOriginal').value ? parseFloat(document.getElementById('precioOriginal').value) : null,
             descuento: document.getElementById('descuento').value ? parseInt(document.getElementById('descuento').value) : null,
-            imagenes: document.getElementById('imagenes').value.split(',').map(url => url.trim()).filter(url => url !== ''),
+            // Las imágenes se gestionan aparte con `selectedFiles` o `imageUrlsInput`
             stock: parseInt(document.getElementById('stock').value),
-            categoria: document.getElementById('categoria').value,
-            destacado: document.getElementById('destacado').checked,
-            enOferta: document.getElementById('enOferta').checked
+            categoria: productCategoryInput.value,
+            tipo: productTypeSelect.value
         };
 
         let result;
         if (editingProductId) {
-            result = await apiRequest('PUT', `?id=${editingProductId}`, product);
+            // Para PUT, el ID ya existe y no se cambia, lo usamos en el endpoint.
+            // Si no se seleccionaron nuevos archivos, enviaremos las URLs que están en el campo de texto
+            if (selectedFiles.length === 0) {
+                 productData.imagenes = imageUrlsInput.value.split(',').map(url => url.trim()).filter(url => url !== '');
+            } else {
+                 productData.imagenes = []; // Si hay archivos nuevos, el backend se encargará de las URLs
+            }
+            
+            result = await apiRequest('PUT', `?id=${editingProductId}`, productData, selectedFiles);
             if (result) {
                 showMessage('Producto actualizado exitosamente.');
                 editingProductId = null;
                 submitBtn.textContent = 'Añadir Producto';
                 cancelEditBtn.style.display = 'none';
                 productForm.reset();
-                document.getElementById('id').disabled = false; // Habilitar ID al añadir
+                productIdInput.value = ''; // Limpiar ID generado
+                productNameInput.disabled = false; // Habilitar nombre para nueva ID
+                resetImageInputs(); // Limpiar inputs de imagen
             }
         } else {
-            result = await apiRequest('POST', '', product);
+            // Para POST, el ID se genera en el backend.
+            // Si no se seleccionaron nuevos archivos, enviaremos las URLs que están en el campo de texto
+            if (selectedFiles.length === 0) {
+                productData.imagenes = imageUrlsInput.value.split(',').map(url => url.trim()).filter(url => url !== '');
+            } else {
+                productData.imagenes = []; // Si hay archivos nuevos, el backend se encargará de las URLs
+            }
+
+            result = await apiRequest('POST', '', productData, selectedFiles);
             if (result) {
                 showMessage('Producto añadido exitosamente.');
                 productForm.reset();
+                productIdInput.value = ''; 
+                resetImageInputs();
             }
         }
 
         if (result) {
-            loadProducts(); // Recargar la lista de productos
+            loadProducts(); 
         }
     });
+
+    // Función para resetear los inputs de imagen y previsualizaciones
+    function resetImageInputs() {
+        fileUploadInput.value = ''; // Limpiar el input de tipo file
+        fileImagePreviewContainer.innerHTML = '';
+        selectedFiles = []; // Resetear array de archivos
+
+        imageUrlsInput.value = ''; // Limpiar el input de URLs
+        urlImagePreviewContainer.innerHTML = '';
+    }
 
     // Editar producto
     productList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('edit-btn')) {
             const productId = e.target.dataset.id;
-            const productToEdit = await apiRequest('GET', `?id=${productId}`); // Obtener el producto específico
+            const productToEdit = await apiRequest('GET', `?id=${productId}`); 
             
             if (productToEdit) {
-                document.getElementById('id').value = productToEdit.id;
-                document.getElementById('id').disabled = true; // No permitir cambiar ID en edición
-                document.getElementById('nombre').value = productToEdit.nombre;
+                editingProductId = productId;
+                
+                productIdInput.value = productToEdit.id;
+                productNameInput.value = productToEdit.nombre;
+                productNameInput.disabled = true; // No permitir cambiar nombre/ID en edición
+
                 document.getElementById('descripcion').value = productToEdit.descripcion || '';
                 document.getElementById('descripcion_corta').value = productToEdit.descripcion_corta || '';
                 document.getElementById('precio').value = productToEdit.precio;
                 document.getElementById('precioOriginal').value = productToEdit.precioOriginal || '';
                 document.getElementById('descuento').value = productToEdit.descuento || '';
-                document.getElementById('imagenes').value = (productToEdit.imagenes || []).join(', ');
                 document.getElementById('stock').value = productToEdit.stock;
-                document.getElementById('categoria').value = productToEdit.categoria || '';
-                document.getElementById('destacado').checked = productToEdit.destacado || false;
-                document.getElementById('enOferta').checked = productToEdit.enOferta || false;
+                productCategoryInput.value = productToEdit.categoria || '';
+                productTypeSelect.value = productToEdit.tipo || 'general';
 
-                editingProductId = productId;
+                // Al editar, NO podemos pre-cargar archivos en un input type="file" por seguridad.
+                // En su lugar, cargamos las URLs existentes en el campo de texto para que el usuario las vea/modifique.
+                resetImageInputs(); // Limpiar cualquier archivo/URL previo
+                if (productToEdit.imagenes && productToEdit.imagenes.length > 0) {
+                    imageUrlsInput.value = productToEdit.imagenes.join(', ');
+                    // Disparar el evento para que se actualice la previsualización de URLs
+                    imageUrlsInput.dispatchEvent(new Event('input')); 
+                }
+
                 submitBtn.textContent = 'Actualizar Producto';
                 cancelEditBtn.style.display = 'inline-block';
             }
@@ -153,9 +327,10 @@ document.addEventListener('DOMContentLoaded', () => {
         editingProductId = null;
         submitBtn.textContent = 'Añadir Producto';
         cancelEditBtn.style.display = 'none';
-        document.getElementById('id').disabled = false; // Habilitar ID al cancelar edición
+        productIdInput.value = ''; 
+        productNameInput.disabled = false; 
+        resetImageInputs(); // Asegurarse de limpiar todo
     });
-
 
     // Eliminar producto
     productList.addEventListener('click', async (e) => {
@@ -171,6 +346,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Cargar productos al inicio (ya no se verifica la clave)
-    loadProducts();
+    // Cargar productos al inicio si ya hay una clave guardada
+    if (localStorage.getItem('adminKey')) {
+        adminKeyInput.value = localStorage.getItem('adminKey'); 
+        loadProducts(); 
+    }
 });

@@ -1,371 +1,284 @@
-// js/producto.js
-document.addEventListener('DOMContentLoaded', () => {
-    let productsData = []; 
+// Variable global para almacenar los productos una vez cargados
+let productsData = [];
 
-    // --- Elementos del DOM Comunes (Mantén los que ya tienes) ---
-    const modalProducto = document.getElementById('productModal');
-    const cerrarModalBtn = document.querySelector('.cerrar-modal');
-    const modalImagenPrincipal = document.getElementById('modal-imagen-principal');
-    const modalMiniaturasContainer = document.querySelector('.miniaturas-container');
-    const modalTitulo = document.getElementById('modal-titulo-producto');
-    const modalDescripcion = document.getElementById('modal-descripcion-producto');
-    const modalPrecioOriginal = document.getElementById('modal-precio-original');
-    const modalPrecioDescuento = document.getElementById('modal-precio-descuento');
-    const modalDescuentoBadge = document.getElementById('modal-descuento-badge');
+document.addEventListener('DOMContentLoaded', () => {
+    // Asegura que el DOM esté completamente cargado antes de ejecutar scripts
+    loadContent();
+    setupMobileNav(); // Asumo que tienes una función para el menú móvil
+    setupThemeToggle(); // Asumo que tienes una función para el toggle de tema
+    setupScrollToTop(); // Asumo que tienes una función para el scroll to top
+});
+
+// Lógica del modal de productos (asumiendo que ya la tienes y funciona)
+// Debes asegurarte de que esta función (showProductModal) puede acceder a productsData
+function showProductModal(productId) {
+    const product = productsData.find(p => p.id === productId);
+    if (!product) {
+        console.error("Producto no encontrado:", productId);
+        return;
+    }
+
+    const modal = document.getElementById('productModal');
+    const modalImage = document.getElementById('modal-imagen-principal');
+    const modalTitle = document.getElementById('modal-titulo-producto');
+    const modalDescription = document.getElementById('modal-descripcion-producto');
+    const modalPriceOriginal = document.getElementById('modal-precio-original');
+    const modalPriceDiscount = document.getElementById('modal-precio-descuento');
+    const modalDiscountBadge = document.getElementById('modal-descuento-badge');
+    const miniaturasContainer = modal.querySelector('.miniaturas-container');
     const whatsappModalBtn = document.getElementById('whatsappModalBtn');
-    const whatsappFab = document.querySelector('.whatsapp-fab');
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-    const themeToggleBtn = document.getElementById('themeToggle'); 
-    const themeToggleMobileBtn = document.getElementById('themeToggleMobile'); 
+
+    modalImage.src = product.imagenes[0] || 'imagenes/default-placeholder.jpg'; // Usa una imagen por defecto si no hay
+    modalImage.alt = product.nombre;
+    modalTitle.textContent = product.nombre;
+    modalDescription.textContent = product.descripcion || product.descripcionCorta || 'Sin descripción.';
+
+    // Limpiar miniaturas anteriores
+    miniaturasContainer.innerHTML = '';
+    // Añadir miniaturas
+    if (product.imagenes && product.imagenes.length > 0) {
+        product.imagenes.forEach(imgSrc => {
+            const thumb = document.createElement('img');
+            thumb.src = imgSrc;
+            thumb.alt = product.nombre;
+            thumb.classList.add('miniatura-modal');
+            thumb.addEventListener('click', () => modalImage.src = imgSrc);
+            miniaturasContainer.appendChild(thumb);
+        });
+    }
+
+    // Mostrar precios
+    if (product.enOferta && product.precioOriginal && product.precio < product.precioOriginal) {
+        modalPriceOriginal.style.display = 'inline-block';
+        modalPriceOriginal.textContent = `S/${product.precioOriginal.toFixed(2)}`;
+        modalPriceDiscount.style.display = 'inline-block';
+        modalPriceDiscount.textContent = `S/${product.precio.toFixed(2)}`;
+        modalDiscountBadge.style.display = 'inline-block';
+        modalDiscountBadge.textContent = `${product.descuento || ''}% OFF`;
+    } else {
+        modalPriceOriginal.style.display = 'none';
+        modalPriceOriginal.textContent = '';
+        modalPriceDiscount.style.display = 'inline-block';
+        modalPriceDiscount.textContent = `S/${product.precio.toFixed(2)}`;
+        modalDiscountBadge.style.display = 'none';
+        modalDiscountBadge.textContent = '';
+    }
+
+    // Actualizar enlace de WhatsApp con el nombre del producto
+    whatsappModalBtn.href = `https://wa.me/51933450055?text=Hola,%20me%20interesa%20la%20gorra%20${encodeURIComponent(product.nombre)}%20(ID:%20${product.id}).%20¿Podrías%20darme%20más%20información?`;
+
+    modal.style.display = 'flex'; // Usar flexbox para centrar
+}
+
+function attachModalEventListeners() {
+    // Adjuntar listeners a los botones "Ver Detalles" (si existen en el HTML)
+    document.querySelectorAll('.product-card .cta-button, .collection-card .cta-button, .offer-card .cta-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const productId = e.target.closest('.product-card, .collection-card, .offer-card').dataset.productId;
+            showProductModal(productId);
+        });
+    });
+
+    // Cerrar modal al hacer clic en la X
+    const closeModal = document.querySelector('.cerrar-modal');
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            document.getElementById('productModal').style.display = 'none';
+        });
+    }
+
+    // Cerrar modal al hacer clic fuera del contenido
+    const productModal = document.getElementById('productModal');
+    if (productModal) {
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) {
+                productModal.style.display = 'none';
+            }
+        });
+    }
+}
+
+
+// Función para renderizar productos en una cuadrícula
+function renderProducts(gridElement, products, cardClassName) {
+    gridElement.innerHTML = ''; // Limpiar contenido existente
+    if (products.length === 0) {
+        gridElement.innerHTML = '<p style="text-align: center; color: var(--color-texto-secundario);">No hay productos disponibles en esta sección por ahora.</p>';
+        return;
+    }
+
+    products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add(cardClassName);
+        productCard.dataset.productId = product.id; // Almacena el ID para el modal
+
+        // Generar HTML interno de la tarjeta
+        productCard.innerHTML = `
+            <img src="${product.imagenes[0] || 'imagenes/default-placeholder.jpg'}" alt="${product.nombre}">
+            <h3>${product.nombre}</h3>
+            ${product.enOferta && product.precioOriginal && product.precio < product.precioOriginal ?
+                `<p class="original-price">S/${product.precioOriginal.toFixed(2)}</p>
+                 <p class="discounted-price">S/${product.precio.toFixed(2)}</p>
+                 <span class="descuento-badge">${product.descuento || ''}% OFF</span>`
+                : `<p class="price">S/${product.precio.toFixed(2)}</p>`
+            }
+            <button class="cta-button">Ver Detalles</button>
+        `;
+        gridElement.appendChild(productCard);
+    });
+    // Volver a adjuntar listeners después de renderizar nuevos elementos
+    attachModalEventListeners();
+}
+
+
+// --- Carga y Renderizado de Contenido Dinámico ---
+async function loadContent() {
+    try {
+        const response = await fetch('/api/get-products'); // Apunta a tu Netlify Function para obtener productos
+        
+        if (!response.ok) {
+            throw new Error(`Error al cargar los productos: HTTP error! status: ${response.status}`);
+        }
+        productsData = await response.json(); // Almacena los productos globales
+        console.log('Productos cargados exitosamente desde la DB:', productsData);
+    } catch (error) {
+        console.error('Hubo un problema al cargar los productos desde la base de datos:', error);
+        // Mostrar un mensaje de error en la UI o cargar desde un JSON de respaldo si lo deseas
+        const featuredGrid = document.getElementById('featuredProductsGrid');
+        const offersGrid = document.getElementById('offerProductsGrid');
+        const allProductsGrid = document.getElementById('allProductsGrid');
+
+        if (featuredGrid) featuredGrid.innerHTML = '<p style="text-align: center; color: red;">No se pudieron cargar los productos destacados.</p>';
+        if (offersGrid) offersGrid.innerHTML = '<p style="text-align: center; color: red;">No se pudieron cargar las ofertas.</p>';
+        if (allProductsGrid) allProductsGrid.innerHTML = '<p style="text-align: center; color: red;">No se pudieron cargar todos los productos.</p>';
+        return;
+    }
+
+    const path = window.location.pathname;
+
+    // Renderizar para index.html (o la página de inicio)
+    if (path.includes('/index.html') || path === '/') {
+        const featuredGrid = document.getElementById('featuredProductsGrid');
+        const offersGrid = document.getElementById('offerProductsGrid');
+
+        if (featuredGrid) {
+            const featuredProducts = productsData.filter(p => p.destacado).slice(0, 4); // Mostrar, por ejemplo, 4 destacados
+            renderProducts(featuredGrid, featuredProducts, 'collection-card');
+        }
+
+        if (offersGrid) {
+            const offerProducts = productsData.filter(p => p.enOferta).slice(0, 4); // Mostrar, por ejemplo, 4 ofertas
+            renderProducts(offersGrid, offerProducts, 'offer-card');
+        }
+    }
+
+    // Renderizar para catalogo.html
+    if (path.endsWith('/catalogo.html')) { // O puedes verificar si existe el elemento 'allProductsGrid'
+        const allProductsGrid = document.getElementById('allProductsGrid');
+        if (allProductsGrid) {
+            renderProducts(allProductsGrid, productsData, 'producto-card');
+        }
+    }
+
+    // Asumimos que estas funciones existen en tu `common.js` o similar
+    // y se inicializan de alguna forma. Si no, agrégalas aquí o en el HTML.
+    // attachModalEventListeners(); // Ya se llama dentro de renderProducts
+}
+
+
+// --- Funciones de Utilidad y UI (si no están en common.js) ---
+
+// Función para el botón de tema (asumiendo que ya la tienes)
+function setupThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleMobile = document.getElementById('themeToggleMobile');
+
+    const updateThemeButton = (isLightMode) => {
+        const icon = `<i class="fas ${isLightMode ? 'fa-moon' : 'fa-sun'}"></i>`;
+        const text = isLightMode ? ' Modo Oscuro' : ' Modo Claro';
+        if (themeToggle) themeToggle.innerHTML = icon + text;
+        if (themeToggleMobile) themeToggleMobile.innerHTML = icon + text;
+    };
+
+    const currentTheme = localStorage.getItem('theme');
+    const isLightMode = currentTheme === 'light-mode';
+    if (isLightMode) {
+        document.documentElement.classList.add('light-mode');
+    }
+    updateThemeButton(isLightMode);
+
+    const toggleTheme = () => {
+        const isCurrentlyLightMode = document.documentElement.classList.toggle('light-mode');
+        localStorage.setItem('theme', isCurrentlyLightMode ? 'light-mode' : 'dark-mode');
+        updateThemeButton(isCurrentlyLightMode);
+    };
+
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+    if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
+}
+
+// Función para el menú móvil (asumiendo que ya la tienes)
+function setupMobileNav() {
     const hamburgerMenu = document.getElementById('hamburgerMenu');
     const mobileNavOverlay = document.getElementById('mobileNavOverlay');
     const closeMobileMenu = document.getElementById('closeMobileMenu');
-    const mobileNavLinks = document.querySelectorAll('#mobileNavOverlay ul li a');
-    const header = document.querySelector('.header');
 
-    const defaultImage = 'https://placehold.co/400x250/8892B0/0A192F?text=Imagen+No+Disp';
-    const phoneNumber = '+51933450055'; 
-
-    // --- Funciones de Utilidad (Mantén estas funciones tal cual) ---
-    /**
-     * Genera el HTML para una tarjeta de producto.
-     * @param {Object} product - Objeto producto de la DB.
-     * @param {string} cardClass - Clase CSS para el tipo de tarjeta.
-     * @returns {string} HTML de la tarjeta de producto.
-     */
-    function createProductCardHTML(product, cardClass) {
-        const imagenSrc = (product.imagenes && product.imagenes.length > 0) ?
-            product.imagenes[0] :
-            defaultImage;
-
-        let priceHTML = `<span class="precio">S/${product.precio.toFixed(2)}</span>`;
-        let discountBadgeHTML = '';
-
-        if (product.enOferta && product.precioOriginal && product.descuento) {
-            priceHTML = `
-                <div class="price-container">
-                    <span class="original-price">S/${product.precioOriginal.toFixed(2)}</span>
-                    <span class="discounted-price">S/${product.precio.toFixed(2)}</span>
-                </div>
-            `;
-            discountBadgeHTML = `<div class="discount-badge">${product.descuento}% OFF</div>`;
-        }
-
-        return `
-            <div class="${cardClass}" data-product-id="${product.id}">
-                ${discountBadgeHTML}
-                <div class="${cardClass.replace('-card', '-image-wrapper')}">
-                    <img src="${imagenSrc}" alt="${product.nombre}" class="${cardClass.replace('-card', '-image')}" loading="lazy" onerror="this.onerror=null;this.src='${defaultImage}';">
-                </div>
-                <div class="${cardClass.replace('-card', '-info')}">
-                    <h3>${product.nombre}</h3>
-                    <p>${product.descripcion_corta}</p>
-                    ${priceHTML}
-                    <button class="ver-detalles-btn" data-product-id="${product.id}">
-                        Ver Detalles <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * Renderiza un array de productos en un contenedor dado.
-     * @param {HTMLElement} containerElement - El elemento DOM donde renderizar.
-     * @param {Array} productsToRender - Array de objetos producto.
-     * @param {string} cardClass - Clase CSS de la tarjeta (ej. 'producto-card').
-     */
-    function renderProducts(containerElement, productsToRender, cardClass) {
-        if (!containerElement) {
-            console.error(`Contenedor no encontrado.`);
-            return;
-        }
-        containerElement.innerHTML = ''; 
-
-        if (productsToRender.length === 0) {
-            containerElement.innerHTML = `<p style="text-align: center; color: var(--color-texto-secundario);">No hay productos disponibles en esta sección.</p>`;
-            return;
-        }
-
-        productsToRender.forEach(product => {
-            containerElement.innerHTML += createProductCardHTML(product, cardClass);
-        });
-    }
-
-    // --- Carga y Renderizado de Contenido Dinámico (Esta es la función que cambia) ---
-    async function loadContent() { 
-        try {
-            // Llama a tu Netlify Function para obtener los productos
-            // La ruta es relativa a la raíz de tu sitio de Netlify
-            const response = await fetch('/.netlify/functions/products'); 
-            
-            if (!response.ok) {
-                // Captura el mensaje de error de la función si lo hay
-                const errorData = await response.json();
-                throw new Error(`Error al cargar los productos: HTTP error! status: ${response.status}. Mensaje: ${errorData.message || 'Error desconocido'}`);
-            }
-            productsData = await response.json(); 
-            console.log('Productos cargados exitosamente de la DB:', productsData); 
-        } catch (error) {
-            console.error('Hubo un problema al cargar los productos:', error);
-            // Mostrar un mensaje de error en la UI si la carga falla
-            const featuredGrid = document.getElementById('featuredProductsGrid');
-            const offersGrid = document.getElementById('offerProductsGrid');
-            const allProductsGrid = document.getElementById('allProductsGrid');
-
-            const errorMessageHTML = '<p style="text-align: center; color: var(--color-texto-secundario);">No se pudieron cargar los productos. Inténtalo de nuevo más tarde o contacta al soporte.</p>';
-
-            if (featuredGrid) featuredGrid.innerHTML = errorMessageHTML;
-            if (offersGrid) offersGrid.innerHTML = errorMessageHTML;
-            if (allProductsGrid) allProductsGrid.innerHTML = errorMessageHTML;
-            
-            return; 
-        }
-
-        const path = window.location.pathname;
-
-        // Renderizar para index.html (o la raíz)
-        if (path.includes('/index.html') || path === '/') {
-            const featuredGrid = document.getElementById('featuredProductsGrid');
-            const offersGrid = document.getElementById('offerProductsGrid');
-
-            if (featuredGrid) {
-                const featuredProducts = productsData.filter(p => p.destacado);
-                renderProducts(featuredGrid, featuredProducts, 'collection-card');
-            }
-
-            if (offersGrid) {
-                const offerProducts = productsData.filter(p => p.enOferta);
-                renderProducts(offersGrid, offerProducts, 'offer-card');
-            }
-        }
-
-        // Renderizar para catalogo.html
-        if (path.endsWith('/catalogo.html') || document.getElementById('allProductsGrid')) {
-            const allProductsGrid = document.getElementById('allProductsGrid');
-            if (allProductsGrid) {
-                renderProducts(allProductsGrid, productsData, 'producto-card');
-            }
-        }
-
-        attachModalEventListeners();
-    }
-
-    // --- Lógica del Modal (sin cambios) ---
-    /**
-     * Adjunta los event listeners a los botones "Ver Detalles".
-     * Se llama después de que las tarjetas de producto son renderizadas dinámicamente.
-     */
-    function attachModalEventListeners() {
-        document.querySelectorAll('.ver-detalles-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const productId = event.currentTarget.dataset.productId;
-                const selectedProduct = productsData.find(p => p.id === productId);
-
-                if (selectedProduct) {
-                    openModal(selectedProduct); 
-                } else {
-                    console.warn(`Producto con ID ${productId} no encontrado.`);
-                }
-            });
-        });
-    }
-
-    /**
-     * Abre el modal y muestra los detalles del producto.
-     * @param {Object} product - El objeto producto a mostrar.
-     */
-    function openModal(product) {
-        modalImagenPrincipal.src = product.imagenes[0] || defaultImage;
-        modalImagenPrincipal.alt = product.nombre;
-
-        modalMiniaturasContainer.innerHTML = '';
-        if (product.imagenes && product.imagenes.length > 0) {
-            product.imagenes.forEach((imgSrc, index) => {
-                const img = document.createElement('img');
-                img.src = imgSrc;
-                img.alt = `Vista ${index + 1} de ${product.nombre}`;
-                img.classList.add('miniatura');
-                if (index === 0) img.classList.add('activa'); 
-                img.addEventListener('click', () => {
-                    modalImagenPrincipal.src = imgSrc; 
-                    document.querySelectorAll('.miniatura').forEach(thumb => thumb.classList.remove('activa'));
-                    img.classList.add('activa');
-                });
-                modalMiniaturasContainer.appendChild(img);
-            });
-        } else {
-            modalMiniaturasContainer.innerHTML = `<p style="color: var(--color-texto-secundario); font-size: 0.85rem;">No hay miniaturas disponibles.</p>`;
-        }
-
-        modalTitulo.textContent = product.nombre;
-        modalDescripcion.textContent = product.descripcion;
-
-        if (product.enOferta && product.precioOriginal && product.descuento) {
-            modalPrecioOriginal.textContent = `S/${product.precioOriginal.toFixed(2)}`;
-            modalPrecioOriginal.style.display = 'inline-block'; 
-            modalPrecioDescuento.textContent = `S/${product.precio.toFixed(2)}`;
-            modalDescuentoBadge.textContent = `${product.descuento}% OFF`;
-            modalDescuentoBadge.style.display = 'inline-block'; 
-        } else {
-            modalPrecioOriginal.style.display = 'none'; 
-            modalPrecioDescuento.textContent = `S/${product.precio.toFixed(2)}`;
-            modalDescuentoBadge.style.display = 'none'; 
-        }
-
-        let whatsappMessage = '';
-        let productPriceText = `S/${product.precio.toFixed(2)}`;
-        if (product.enOferta && product.precioOriginal) {
-            productPriceText = `S/${product.precio.toFixed(2)} (Antes S/${product.precioOriginal.toFixed(2)}, ${product.descuento}% OFF)`;
-        }
-
-        if (typeof product.stock === 'number') {
-            if (product.stock > 0) {
-                whatsappModalBtn.textContent = 'Preguntar por WhatsApp';
-                whatsappModalBtn.classList.remove('disabled');
-                whatsappMessage = `Hola! Estoy interesado en la gorra "${product.nombre}" (ID: ${product.id}).`;
-                whatsappMessage += `\nSu precio es: ${productPriceText}.`;
-                whatsappMessage += `\n¿Me podrías confirmar si está disponible y si tienen más fotos?`;
-            } else {
-                whatsappModalBtn.textContent = 'Producto Agotado';
-                whatsappModalBtn.classList.add('disabled');
-                whatsappModalBtn.href = "#"; 
-                whatsappMessage = ''; 
-            }
-        } else { 
-            whatsappModalBtn.textContent = 'Preguntar por WhatsApp';
-            whatsappModalBtn.classList.remove('disabled');
-            whatsappMessage = `Hola! Estoy interesado en la gorra "${product.nombre}" (ID: ${product.id}).`;
-            whatsappMessage += `\nSu precio es: ${productPriceText}.`;
-            whatsappMessage += `\n¿Podrías darme más información sobre este producto?`;
-        }
-
-        if (whatsappMessage) {
-            whatsappModalBtn.href = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(whatsappMessage)}`;
-        } else {
-            whatsappModalBtn.href = `https://wa.me/${phoneNumber.replace('+', '')}`;
-        }
-
-        modalProducto.style.display = 'flex'; 
-        document.body.style.overflow = 'hidden'; 
-    }
-
-    /**
-     * Cierra el modal de producto.
-     */
-    function closeModal() {
-        modalProducto.style.display = 'none'; 
-        document.body.style.overflow = ''; 
-    }
-
-    // Event listeners para cerrar el modal (sin cambios)
-    if (cerrarModalBtn) {
-        cerrarModalBtn.addEventListener('click', closeModal);
-    }
-    window.addEventListener('click', (event) => {
-        if (event.target === modalProducto) {
-            closeModal();
-        }
-    });
-
-    // --- Funcionalidad del Tema Claro/Oscuro (sin cambios) ---
-    function applyTheme(isLightMode) {
-        if (isLightMode) {
-            document.body.classList.add('light-mode');
-            localStorage.setItem('theme', 'light-mode');
-            const iconHTML = '<i class="fas fa-moon"></i> Modo Oscuro';
-            if (themeToggleBtn) themeToggleBtn.innerHTML = iconHTML;
-            if (themeToggleMobileBtn) themeToggleMobileBtn.innerHTML = iconHTML;
-        } else {
-            document.body.classList.remove('light-mode');
-            localStorage.setItem('theme', 'dark-mode');
-            const iconHTML = '<i class="fas fa-sun"></i> Modo Claro';
-            if (themeToggleBtn) themeToggleBtn.innerHTML = iconHTML;
-            if (themeToggleMobileBtn) themeToggleMobileBtn.innerHTML = iconHTML;
-        }
-    }
-
-    const currentTheme = localStorage.getItem('theme');
-    applyTheme(currentTheme === 'light-mode');
-
-    [themeToggleBtn, themeToggleMobileBtn].forEach(btn => {
-        if (btn) {
-            btn.addEventListener('click', () => {
-                applyTheme(!document.body.classList.contains('light-mode')); 
-            });
-        }
-    });
-
-    // --- Funcionalidad del Menú Hamburguesa (Mobile) (sin cambios) ---
     if (hamburgerMenu) {
         hamburgerMenu.addEventListener('click', () => {
-            mobileNavOverlay.classList.add('active'); 
-            document.body.style.overflow = 'hidden'; 
+            mobileNavOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Evita el scroll en el body
         });
     }
 
     if (closeMobileMenu) {
         closeMobileMenu.addEventListener('click', () => {
-            mobileNavOverlay.classList.remove('active'); 
-            document.body.style.overflow = ''; 
+            mobileNavOverlay.classList.remove('open');
+            document.body.style.overflow = ''; // Restaura el scroll
         });
     }
 
-    mobileNavLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileNavOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-    });
-
-    window.addEventListener('click', (event) => {
-        if (mobileNavOverlay.classList.contains('active') &&
-            !mobileNavOverlay.contains(event.target) &&
-            !hamburgerMenu.contains(event.target)) {
-            mobileNavOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
-
-    // --- Funcionalidad de Scroll-to-top y ocultar/mostrar header (sin cambios) ---
-    let lastScrollY = 0;
-    const scrollThreshold = 50; 
-
-    if (scrollToTopBtn) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollToTopBtn.classList.add('show'); 
-            } else {
-                scrollToTopBtn.classList.remove('show'); 
-            }
-
-            if (header) { 
-                if (window.scrollY > lastScrollY && window.scrollY > scrollThreshold) {
-                    header.classList.add('hidden'); 
-                } else if (window.scrollY < lastScrollY) {
-                    header.classList.remove('hidden'); 
-                }
-
-                if (window.scrollY === 0) {
-                    header.classList.remove('hidden');
-                }
-            }
-            lastScrollY = window.scrollY; 
-        });
-
-        scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' 
+    // Cerrar menú si se hace clic en un enlace
+    if (mobileNavOverlay) {
+        mobileNavOverlay.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileNavOverlay.classList.remove('open');
+                document.body.style.overflow = '';
             });
         });
     }
+}
 
-    // --- Configuración Inicial de Enlaces de WhatsApp FAB (Floating Action Button) (sin cambios) ---
-    if (whatsappFab) {
-        whatsappFab.href = `https://wa.me/${phoneNumber.replace('+', '')}`;
+// Función para el scroll to top (asumiendo que ya la tienes)
+function setupScrollToTop() {
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+    window.addEventListener('scroll', () => {
+        if (scrollToTopBtn) {
+            if (window.scrollY > 300) { // Mostrar botón después de 300px de scroll
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        }
+    });
+
+    if (scrollToTopBtn) {
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
     }
+}
 
-    // --- INICIALIZACIÓN ---
+// Llama a las funciones de configuración al cargar el DOM
+document.addEventListener('DOMContentLoaded', () => {
     loadContent();
+    setupMobileNav();
+    setupThemeToggle();
+    setupScrollToTop();
+    // Establecer el año actual en el footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
 });

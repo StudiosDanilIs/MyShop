@@ -1,20 +1,36 @@
-// netlify/functions/products.js
+// MYSHOP/netlify/functions/products.js
 const { Pool } = require('@neondatabase/serverless');
+const Busboy = require('busboy');
+const cloudinary = require('cloudinary').v2;
 
+// --- Configuración de Variables de Entorno (se obtienen de Netlify) ---
 const connectionString = process.env.DATABASE_URL;
+const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY;
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
+
+// Configurar Cloudinary con tus credenciales
+cloudinary.config({
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET
+});
+
 const pool = new Pool({ connectionString });
 
 exports.handler = async function(event, context) {
     const headers = {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': '*', // Permite cualquier origen (ajustar en producción)
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type', // 'X-Admin-Key' ELIMINADO
-        'Content-Type': 'application/json'
+        'Access-Control-Allow-Headers': 'Content-Type, X-Admin-Key', // Necesario para la clave
+        'Content-Type': 'application/json' // Tipo de contenido por defecto para respuestas JSON
     };
 
+    // Manejo de pre-vuelos OPTIONS para CORS
     if (event.httpMethod === 'OPTIONS') {
         return {
-            statusCode: 204,
+            statusCode: 204, // No Content
             headers: headers,
             body: ''
         };
@@ -24,6 +40,7 @@ exports.handler = async function(event, context) {
     const path = event.path;
 
     try {
+        // Validación básica de ruta
         if (!path.startsWith('/.netlify/functions/products')) {
             return {
                 statusCode: 404,
@@ -32,8 +49,92 @@ exports.handler = async function(event, context) {
             };
         }
 
-        // Lógica de seguridad para ADMIN_SECRET_KEY ELIMINADA de aquí
+        // --- Autenticación para operaciones de escritura (POST, PUT, DELETE) ---
+        if (method !== 'GET') {
+            const providedKey = event.headers['x-admin-key'];
+            if (!providedKey || providedKey !== ADMIN_SECRET_KEY) {
+                return {
+                    statusCode: 401, // Unauthorized
+                    headers: headers,
+                    body: JSON.stringify({ message: 'Acceso no autorizado. Clave de administrador requerida.' }),
+                };
+            }
+        }
 
+        let formData = {}; // Almacenará campos de texto del formulario
+        let uploadedImageUrls = []; // Almacenará URLs de imágenes subidas a Cloudinary
+
+        // --- Manejo de la carga de archivos (multipart/form-data) o JSON normal ---
+        if (method === 'POST' || method === 'PUT') {
+            // Verificar si la solicitud es multipart/form-data (contiene archivos)
+            if (event.headers['content-type'] && event.headers['content-type'].includes('multipart/form-data')) {
+                const busboy = Busboy({ headers: event.headers });
+                
+                await new Promise((resolve, reject) => {
+                    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+                        console.log(`Subiendo archivo: ${filename}`);
+                        const uploadStream = cloudinary.uploader.upload_stream(
+                            { 
+                                folder: "myshop_products", // Carpeta en tu Cloudinary
+                                format: "webp" // Opcional: convertir a WebP para optimización
+                            },
+                            (error, result) => {
+                                if (error) {
+                                    console.error("Cloudinary Upload Error:", error);
+                                    reject(new Error(`Error al subir imagen: ${error.message}`));
+                                } else {
+                                    console.log("Cloudinary Upload Success:", result.url);
+                                    uploadedImageUrls.push(result.url);
+                                }
+                            }
+                        );
+                        file.pipe(uploadStream); // Envía el archivo directamente al stream de Cloudinary
+                    });
+
+                    busboy.on('field', (fieldname, val) => {
+                        // Los campos de texto se guardan en formData
+                        try {
+                            // Intenta parsear como JSON si parece un array o JSON string
+                            formData[fieldname] = JSON.parse(val);
+                        } catch (e) {
+                            formData[fieldname] = val;
+                        }
+                    });
+
+                    busboy.on('finish', () => {
+                        console.log('Busboy finished parsing form.');
+                        resolve();
+                    });
+
+                    busboy.on('error', reject);
+                    
+                    // Asegúrate de que el body es un Buffer, esencial para busboy
+                    busboy.end(Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'latin1'));
+                });
+
+                // Si se subieron archivos, usa esas URLs. Si no, usa las URLs existentes del campo de texto.
+                if (uploadedImageUrls.length > 0) {
+                    formData.imagenes = uploadedImageUrls;
+                } else if (formData.imagenes && typeof formData.imagenes === 'string') {
+                    // Si no se subieron archivos nuevos, pero el campo de texto de URLs estaba lleno
+                    formData.imagenes = formData.imagenes.split(',').map(url => url.trim()).filter(url => url !== '');
+                } else {
+                    formData.imagenes = []; // Si no hay ni archivos ni URLs, es un array vacío
+                }
+
+            } else {
+                // Si la solicitud es application/json (para actualizaciones sin subir archivos nuevos)
+                formData = JSON.parse(event.body);
+                if (formData.imagenes && typeof formData.imagenes === 'string') {
+                    formData.imagenes = formData.imagenes.split(',').map(url => url.trim()).filter(url => url !== '');
+                } else if (!formData.imagenes) {
+                    formData.imagenes = [];
+                }
+            }
+        }
+
+
+        // --- Lógica CRUD para Productos ---
         if (method === 'GET') {
             const productId = event.queryStringParameters ? event.queryStringParameters.id : null;
             let query = 'SELECT * FROM productos';
@@ -54,11 +155,10 @@ exports.handler = async function(event, context) {
                 precio: parseFloat(row.precio), 
                 precioOriginal: row.precio_original ? parseFloat(row.precio_original) : undefined,
                 descuento: row.descuento || undefined,
-                imagenes: row.imagenes || [], 
+                imagenes: row.imagenes || [], // Debería ser un ARRAY de la DB
                 stock: row.stock || 0,
                 categoria: row.categoria,
-                destacado: row.destacado,
-                enOferta: row.en_oferta
+                tipo: row.tipo || 'general'
             }));
 
             if (productId && formattedRows.length === 0) {
@@ -76,33 +176,49 @@ exports.handler = async function(event, context) {
             };
         }
         else if (method === 'POST') {
-            const data = JSON.parse(event.body);
-            if (!data.id || !data.nombre || data.precio === undefined) {
+            if (!formData.nombre || formData.precio === undefined) {
                 return {
                     statusCode: 400,
                     headers: headers,
-                    body: JSON.stringify({ message: 'ID, nombre y precio son campos requeridos.' }),
+                    body: JSON.stringify({ message: 'Nombre y precio son campos requeridos.' }),
                 };
             }
 
+            // Generación de ID automático y validación de unicidad
+            let baseId = formData.nombre.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+            let finalId = baseId;
+            let counter = 0;
+            let idExists = true;
+
+            while (idExists) {
+                const checkQuery = 'SELECT id FROM productos WHERE id = $1';
+                const { rows } = await pool.query(checkQuery, [finalId]);
+                if (rows.length === 0) {
+                    idExists = false;
+                } else {
+                    counter++;
+                    finalId = `${baseId}-${counter}`;
+                }
+            }
+            formData.id = finalId; // Asigna el ID generado
+
             const insertQuery = `
-                INSERT INTO productos (id, nombre, descripcion, descripcion_corta, precio, precio_original, descuento, imagenes, stock, categoria, destacado, en_oferta)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                INSERT INTO productos (id, nombre, descripcion, descripcion_corta, precio, precio_original, descuento, imagenes, stock, categoria, tipo)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                 RETURNING *;
             `;
             const values = [
-                data.id,
-                data.nombre,
-                data.descripcion || null,
-                data.descripcion_corta || null,
-                data.precio,
-                data.precioOriginal || null,
-                data.descuento || null,
-                data.imagenes || [],
-                data.stock || 0,
-                data.categoria || null,
-                data.destacado || false,
-                data.enOferta || false
+                formData.id,
+                formData.nombre,
+                formData.descripcion || null,
+                formData.descripcion_corta || null,
+                formData.precio,
+                formData.precioOriginal || null,
+                formData.descuento || null,
+                formData.imagenes || [], // Usar el array de URLs
+                formData.stock || 0,
+                formData.categoria || null,
+                formData.tipo || 'general'
             ];
             const { rows } = await pool.query(insertQuery, values);
             return {
@@ -116,7 +232,7 @@ exports.handler = async function(event, context) {
             if (!productId) {
                 return { statusCode: 400, headers: headers, body: JSON.stringify({ message: 'ID del producto es requerido para actualizar.' }) };
             }
-            const data = JSON.parse(event.body);
+            
             const updates = [];
             const values = [];
             let paramIndex = 1;
@@ -124,14 +240,14 @@ exports.handler = async function(event, context) {
             const columnMap = {
                 precioOriginal: 'precio_original',
                 descripcionCorta: 'descripcion_corta',
-                enOferta: 'en_oferta',
+                // ya no es necesario 'enOferta' si usamos 'tipo'
             };
 
-            for (const key in data) {
+            for (const key in formData) { // Usa formData aquí
                 if (key === 'id') continue; 
                 const dbColumn = columnMap[key] || key.toLowerCase(); 
                 updates.push(`${dbColumn} = $${paramIndex++}`);
-                values.push(data[key]);
+                values.push(formData[key]);
             }
 
             if (updates.length === 0) {
@@ -162,6 +278,7 @@ exports.handler = async function(event, context) {
             if (!productId) {
                 return { statusCode: 400, headers: headers, body: JSON.stringify({ message: 'ID del producto es requerido para eliminar.' }) };
             }
+            
             const deleteQuery = 'DELETE FROM productos WHERE id = $1 RETURNING id;';
             const { rowCount } = await pool.query(deleteQuery, [productId]);
 

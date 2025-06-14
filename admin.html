@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración de Productos</title>
-    <link rel="stylesheet" href="css/style.css"> <style>
+    <link rel="stylesheet" href="css/style.css"> 
+    <style>
         /* Estilos básicos para el panel de administración */
         body {
             font-family: Arial, sans-serif;
@@ -48,13 +49,14 @@
         input[type="text"],
         input[type="number"],
         textarea,
-        select {
+        select,
+        input[type="file"] { /* Nuevo estilo para input file */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1em;
             width: 100%;
-            box-sizing: border-box; /* Asegura que padding no aumente el ancho total */
+            box-sizing: border-box;
         }
         input[type="checkbox"] {
             margin-top: 10px;
@@ -155,25 +157,75 @@
             color: #721c24;
             border-color: #f5c6cb;
         }
-        /* La sección de login se elimina, así que estos estilos ya no son necesarios */
-        /* #login-section { display: none; } */
+        #login-section {
+            background-color: #e9ecef;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #login-section input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #login-section button {
+            background-color: #007bff;
+            color: white;
+        }
+        #login-section button:hover {
+            background-color: #0056b3;
+        }
+        #admin-panel {
+            display: none; 
+        }
+        /* Para el campo de subida de archivos */
+        .file-upload-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: flex-start;
+        }
+        .image-preview img {
+            max-width: 80px;
+            max-height: 80px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Panel de Administración de Productos</h1>
 
-        <div id="admin-panel"> <p id="statusMessage" class="message"></p>
+        <div id="login-section">
+            <h2>Iniciar Sesión de Administrador</h2>
+            <input type="password" id="adminKeyInput" placeholder="Ingresa la clave de administrador">
+            <button id="loginBtn">Ingresar</button>
+            <p id="loginMessage" class="message"></p>
+        </div>
+
+        <div id="admin-panel">
+            <p id="statusMessage" class="message"></p>
 
             <h2>Añadir/Editar Producto</h2>
             <form id="productForm">
                 <div>
-                    <label for="id">ID del Producto (único):</label>
-                    <input type="text" id="id" required>
-                </div>
-                <div>
                     <label for="nombre">Nombre:</label>
                     <input type="text" id="nombre" required>
+                </div>
+                <div>
+                    <label for="id">ID del Producto (se genera automáticamente):</label>
+                    <input type="text" id="id" readonly style="background-color: #e9ecef;">
                 </div>
                 <div>
                     <label for="descripcion">Descripción:</label>
@@ -195,28 +247,41 @@
                     <label for="descuento">Descuento (opcional, %):</label>
                     <input type="number" id="descuento">
                 </div>
-                <div>
-                    <label for="imagenes">Imágenes (URLs separadas por comas):</label>
-                    <input type="text" id="imagenes">
+
+                <div style="grid-column: span 2;" class="file-upload-group">
+                    <label for="fileUpload">Subir Imágenes (hasta 5):</label>
+                    <input type="file" id="fileUpload" multiple accept="image/*">
+                    <div id="fileImagePreview" class="image-preview"></div>
+                    <small>Puedes subir hasta 5 imágenes desde tu dispositivo. Si también ingresas URLs, las URLs tendrán prioridad si el campo de archivo está vacío.</small>
                 </div>
+                 <div style="grid-column: span 2;" class="image-input-group">
+                    <label for="imageUrls">O ingresa URLs de Imágenes (separadas por comas):</label>
+                    <input type="text" id="imageUrls" placeholder="URL1, URL2, URL3...">
+                    <div id="urlImagePreview" class="image-preview"></div>
+                    <small>Usa esto para imágenes ya existentes o si no quieres subir un archivo nuevo. Las URLs de aquí se mostrarán si no subes archivos.</small>
+                </div>
+
                 <div>
                     <label for="stock">Stock:</label>
                     <input type="number" id="stock" required>
                 </div>
+                
                 <div>
-                    <label for="categoria">Categoría:</label>
-                    <input type="text" id="categoria">
+                    <label for="tipo">Tipo de Producto:</label>
+                    <select id="tipo">
+                        <option value="general">General</option>
+                        <option value="oferta">En Oferta</option>
+                        <option value="destacado">Destacado</option>
+                        <option value="nuevo">Nuevo</option>
+                        <option value="liquidacion">Liquidación</option>
+                    </select>
                 </div>
+                
                 <div>
-                    <label for="destacado">
-                        <input type="checkbox" id="destacado"> Destacado
-                    </label>
+                    <label for="categoria">Categoría específica:</label>
+                    <input type="text" id="categoria" placeholder="Ej: Electrónica, Ropa, etc.">
                 </div>
-                <div>
-                    <label for="enOferta">
-                        <input type="checkbox" id="enOferta"> En Oferta
-                    </label>
-                </div>
+
                 <div class="form-actions">
                     <button type="submit" class="add-btn" id="submitBtn">Añadir Producto</button>
                     <button type="button" class="cancel-btn" id="cancelEditBtn" style="display: none;">Cancelar Edición</button>

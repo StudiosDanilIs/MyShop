@@ -1,23 +1,17 @@
 {
-  "name": "myshop",
+  "name": "proyecto-myshop",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/StudiosDanilIs/MyShop.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/StudiosDanilIs/MyShop/issues"
-  },
-  "homepage": "https://github.com/StudiosDanilIs/MyShop#readme",
   "description": "",
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.1"
+    "@neondatabase/serverless": "^1.0.1",
+    "busboy": "^1.6.0",
+    "cloudinary": "^2.6.1"
   }
 }
