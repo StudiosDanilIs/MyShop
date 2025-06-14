@@ -1,167 +1,175 @@
 [
     {
-        "id": "gorra-negra-clasica",
-        "nombre": "Gorra Negra Clásica",
-        "descripcion": "El básico que nunca falla, ideal para cualquier outfit urbano. Ajuste perfecto. Confeccionada con materiales de alta durabilidad y un diseño atemporal que combina con todo. Ideal para uso diario.",
-        "descripcion_corta": "El básico que nunca falla, ideal para cualquier outfit urbano. Ajuste perfecto.",
-        "precio": 75.00,
+        "id": "gorra-los-angeles-angels",
+        "nombre": "Gorra Los Angeles",
+        "descripcion": "Gorra Los Angeles Angels PL Ajustable color Azul y Rojo, un clásico atemporal que combina estilo y comodidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para cualquier ocasión, ya sea para un día casual o para animar a tu equipo favorito.",
+        "descripcion_corta": "Gorra Los Angeles Angels PL Ajustable color Azul y Rojo.",
+        "precio": 54.90,
+        "precioOriginal": 69.90,
+        "descuento": 21,
         "imagenes": [
-            "/imagenes/1.webp",
-            "/imagenes/2.webp",
-            "/imagenes/4.jpeg"
+            "/imagenes/por_1.jpg",
+            "/imagenes/car_1_1.jpg",
+            "/imagenes/car_1_2.jpg",
+            "/imagenes/car_1_3.jpg"
         ],
-        "stock": 15,
-        "categoria": "clásicas",
-        "destacado": true,
-        "enOferta": false
+        "stock": 3,
+        "categoria": "urbana",
+        "destacado": false,
+        "enOferta": true
     },
     {
-        "id": "gorra-blanca-minimalista",
-        "nombre": "Gorra Blanca Minimalista",
-        "descripcion": "Estilo puro y limpio, un accesorio imprescindible para un look fresco. Fabricada con algodón transpirable para máxima comodidad, perfecta para los días soleados.",
+        "id": "gorra-compton",
+        "nombre": "Gorra Compton",
+        "descripcion": "Gorra Compton PL Ajustable color Azul y Blanco, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look urbano y moderno.",
         "descripcion_corta": "Estilo puro y limpio, un accesorio imprescindible para un look fresco.",
-        "precio": 80.00,
+        "precio": 49.90,
+        "precioOriginal": 64.90,
+        "descuento": 23,
         "imagenes": [
-            "/imagenes/3.jpeg"
+            "/imagenes/por_2.jpg",
+            "/imagenes/car_2_1.jpg",
+            "/imagenes/car_2_2.jpg",
+            "/imagenes/car_2_3.jpg"
         ],
-        "stock": 10,
-        "categoria": "minimalista",
+        "stock": 3,
+        "categoria": "urbano",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-milwaukee-bucks",
+        "nombre": "Gorra Milwaukee Bucks",
+        "descripcion": "Gorra Milwaukee Bucks PL Ajustable color marron y blanco, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Milwaukee Bucks PL Ajustable color marron y blanco.",
+        "precio": 49.00,
+        "imagenes": [
+            "/imagenes/por_3.jpg",
+            "/imagenes/car_3_1.jpg",
+            "/imagenes/car_3_2.jpg"
+        ],
+        "stock": 3,
+        "categoria": "casual",
         "destacado": true,
         "enOferta": false
     },
     {
-        "id": "gorra-azul-deportiva",
-        "nombre": "Gorra Azul Deportiva",
-        "descripcion": "Confeccionada para el confort y el estilo en tus actividades diarias. Material ligero y absorbe la humedad, ideal para entrenamientos o para un look casual y activo.",
-        "descripcion_corta": "Confeccionada para el confort y el estilo en tus actividades diarias.",
-        "precio": 90.00,
+        "id": "gorra-brooklin-nets",
+        "nombre": "Gorra Brooklin Nets",
+        "descripcion": "Gorra Brooklin Nets PL Ajustable color Roja, hermosa y elegante, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Brooklin Nets PL Ajustable",
+        "precio": 49.90,
+        "precioOriginal": 79.90,
+        "descuento": 37,
         "imagenes": [
-            "/imagenes/4.jpeg"
+            "/imagenes/por_4.jpg",
+            "/imagenes/car_4_1.jpg",
+            "/imagenes/car_4_2.jpg"
         ],
-        "stock": 8,
-        "categoria": "deportiva",
-        "destacado": true,
+        "stock": 4,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-brooklin-nets-plomo",
+        "nombre": "Gorra Brooklin Nets Plomo",
+        "descripcion": "Gorra Brooklin Nets Plomo PL Ajustable color Plomo, ideal para un look atrevido y moderno. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan destacar con un estilo único.",
+        "descripcion_corta": "Gorra Brooklin Nets Plomo PL Ajustable",
+        "precio": 49.90,
+        "imagenes": [
+            "/imagenes/por_5.jpg",
+            "/imagenes/car_5_1.jpg",
+            "/imagenes/car_5_2.jpg"
+        ],
+        "stock": 3,
+        "categoria": "oferta",
+        "destacado": false,
         "enOferta": false
     },
     {
-        "id": "gorra-roja-estilo-retro",
-        "nombre": "Gorra Roja Estilo Retro",
-        "descripcion": "Diseño vibrante con un toque retro. ¡Ideal para destacar! Fabricada con sarga de algodón de alta calidad y un ajuste snapback para mayor comodidad.",
-        "descripcion_corta": "Diseño vibrante con un toque retro. ¡Ideal para destacar!",
-        "precio": 78.75,
-        "precioOriginal": 105.00,
-        "descuento": 25,
+        "id": "gorra-los-angeles",
+        "nombre": "Gorra Los Angeles",
+        "descripcion": "Gorra Los Angeles Multicolor PL Ajustable, un clásico atemporal que combina estilo y comodidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para cualquier ocasión, ya sea para un día casual o para animar a tu equipo favorito.",
+        "descripcion_corta": "Gorra Los Angeles Multicolor PL Ajustable.",
+        "precio": 54.90,
+        "precioOriginal": 69.90,
+        "descuento": 21,
         "imagenes": [
-            "/imagenes/2.jpeg"
-        ],
+            "/imagenes/por_6.jpg",
+            "/imagenes/car_6_1.jpg",
+            "/imagenes/car_6_2.jpg"
+            ],
         "stock": 5,
         "categoria": "oferta",
         "destacado": false,
         "enOferta": true
     },
     {
-        "id": "gorra-camuflaje-urbana-v1",
-        "nombre": "Gorra Camuflaje Urbana V1",
-        "descripcion": "Perfecta para un look atrevido y moderno. Edición limitada. Su patrón de camuflaje te da un toque distintivo y urbano, ideal para combinar con tu ropa casual.",
-        "descripcion_corta": "Perfecta para un look atrevido y moderno. Edición limitada.",
-        "precio": 105.00,
-        "precioOriginal": 123.53,
-        "descuento": 15,
+        "id": "gorra-boston-celtics",
+        "nombre": "Gorra Boston Celtics",
+        "descripcion": "Gorra Boston Celtics PL Ajustable color Verde y Blanco, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Boston Celtics PL Ajustable color Verde y Blanco.",
+        "precio": 49.90,
         "imagenes": [
-            "/imagenes/2.jpeg",
-            "/imagenes/ss.jpeg"
+            "/imagenes/por_7.jpg",
+            "/imagenes/car_7_1.jpg",
+            "/imagenes/car_7_2.jpg",
+            "/imagenes/car_7_3.jpg"
         ],
-        "stock": 7,
-        "categoria": "oferta",
-        "destacado": false,
-        "enOferta": true
-    },
-    {
-        "id": "gorra-camuflaje-urbana-v2",
-        "nombre": "Gorra Camuflaje Urbana V2",
-        "descripcion": "Perfecta para un look atrevido y moderno. Edición limitada. Su patrón de camuflaje te da un toque distintivo y urbano, ideal para combinar con tu ropa casual.",
-        "descripcion_corta": "Perfecta para un look atrevido y moderno. Edición limitada.",
-        "precio": 105.00,
-        "precioOriginal": 123.53,
-        "descuento": 15,
-        "imagenes": [
-            "/imagenes/2.jpeg"
-        ],
-        "stock": 7,
-        "categoria": "oferta",
-        "destacado": false,
-        "enOferta": true
-    },
-    {
-        "id": "gorra-camuflaje-urbana-v3",
-        "nombre": "Gorra Camuflaje Urbana V3",
-        "descripcion": "Perfecta para un look atrevido y moderno. Edición limitada. Su patrón de camuflaje te da un toque distintivo y urbano, ideal para combinar con tu ropa casual.",
-        "descripcion_corta": "Perfecta para un look atrevido y moderno. Edición limitada.",
-        "precio": 105.00,
-        "precioOriginal": 123.53,
-        "descuento": 15,
-        "imagenes": [
-            "/imagenes/ss.jpeg"
-        ],
-        "stock": 7,
-        "categoria": "oferta",
-        "destacado": false,
-        "enOferta": true
-    },
-    {
-        "id": "gorra-gris-casual",
-        "nombre": "Gorra Gris Casual",
-        "descripcion": "Un estilo relajado para el día a día. Versátil y cómoda, se adapta a cualquier ocasión. Confección robusta y un diseño limpio que nunca pasa de moda.",
-        "descripcion_corta": "Un estilo relajado para el día a día. Versátil y cómoda.",
-        "precio": 65.00,
-        "imagenes": [
-            "/imagenes/1.jpeg"
-        ],
-        "stock": 20,
-        "categoria": "casual",
-        "destacado": false,
-        "enOferta": false
-    },
-    {
-        "id": "gorra-verde-militar",
-        "nombre": "Gorra Verde Militar",
-        "descripcion": "Ideal para un estilo robusto y aventurero. Diseño duradero y resistente. Perfecta para actividades al aire libre o para un toque urbano con carácter.",
-        "descripcion_corta": "Estilo robusto y aventurero. Diseño duradero.",
-        "precio": 95.00,
-        "imagenes": [
-            "/imagenes/4.jpeg"
-        ],
-        "stock": 12,
-        "categoria": "militar",
+        "stock": 2,
+        "categoria": "destacada",
         "destacado": true,
         "enOferta": false
     },
     {
-        "id": "gorra-rosa-pastel",
-        "nombre": "Gorra Rosa Pastel",
-        "descripcion": "Un toque suave y moderno para tu look. Material ligero y transpirable. Ideal para quienes buscan un estilo fresco y delicado.",
-        "descripcion_corta": "Toque suave y moderno. Ligera y transpirable.",
-        "precio": 85.00,
+        "id": "gorra_chicago_white_sox",
+        "nombre": "Gorra Chicago White Sox",
+        "descripcion": "Gorra Chicago White Sox PL Ajustable color Menta, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Chicago White Sox PL Ajustable",
+        "precio": 54.90,
         "imagenes": [
-            "/imagenes/3.jpeg"
+            "/imagenes/por_8.jpg",
+            "/imagenes/car_8_1.jpg",
+            "/imagenes/car_8_2.jpg",
+            "/imagenes/car_8_3.jpg"],
+
+        "stock": 3,
+        "categoria": "elegante",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra_toronto_blue_jays",
+        "nombre": "Gorra Toronto Blue Jays",
+        "descripcion": "Gorra Toronto Blue Jays PL Ajustable Color Marron/Crema, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Toronto Blue Jays PL Ajustable",
+        "precio": 45.90,
+        "imagenes": [
+            "/imagenes/por_9.jpg",
+            "/imagenes/car_9_1.jpg",
+            "/imagenes/car_9_2.jpg"
         ],
-        "stock": 9,
-        "categoria": "moda",
+        "stock": 3,
+        "categoria": "beisbol",
         "destacado": false,
         "enOferta": false
     },
     {
-        "id": "gorra-beige-elegante",
-        "nombre": "Gorra Beige Elegante",
-        "descripcion": "Sofisticación en cada detalle, perfecta para un estilo casual chic. Tela de alta calidad y un ajuste cómodo, ideal para cualquier ocasión.",
-        "descripcion_corta": "Sofisticación en cada detalle. Casual chic.",
-        "precio": 100.00,
+        "id": "gorra-memphis-grizzlies-jersey",
+        "nombre": "Gorra Memphis Grizzlies Jersey",
+        "descripcion": "Gorra Memphis Grizzlies Jersey PL Ajustable color Celeste y Negro, siendo un gran modelo moderno y elegante Aprovecha Ahora.",
+        "descripcion_corta": "Gorra Memphis Grizzlies Jersey PL Ajustable.",
+        "precio": 49.00,
         "imagenes": [
-            "/imagenes/1.jpeg"
+            "/imagenes/por_10.jpg",
+            "/imagenes/car_10_1.jpg",
+            "/imagenes/car_10_2.jpg",
+            "/imagenes/car_10_3.jpg"
         ],
         "stock": 6,
-        "categoria": "elegante",
-        "destacado": false,
+        "categoria": "moda",
+        "destacado": true,
         "enOferta": false
     }
 ]
