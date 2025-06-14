@@ -1,388 +1,224 @@
+// js/admin.js
+
 document.addEventListener('DOMContentLoaded', () => {
-    let productsData = [];
+    const productForm = document.getElementById('product-form');
+    const productIdInput = document.getElementById('product-id');
+    const productNameInput = document.getElementById('product-name');
+    const productShortDescInput = document.getElementById('product-short-desc');
+    const productLongDescInput = document.getElementById('product-long-desc');
+    const productPriceInput = document.getElementById('product-price');
+    const productOriginalPriceInput = document.getElementById('product-original-price');
+    const productDiscountInput = document.getElementById('product-discount');
+    const productImagesInput = document.getElementById('product-images');
+    const productStockInput = document.getElementById('product-stock');
+    const productCategoryInput = document.getElementById('product-category');
+    const productFeaturedInput = document.getElementById('product-featured');
+    const productOnSaleInput = document.getElementById('product-on-sale');
+    const productIdHidden = document.getElementById('product-id-hidden'); // Para el ID al editar
 
-    // --- Elementos del DOM Comunes ---
-    const modalProducto = document.getElementById('productModal');
-    const cerrarModalBtn = document.querySelector('.cerrar-modal');
-    const modalImagenPrincipal = document.getElementById('modal-imagen-principal');
-    const modalMiniaturasContainer = document.querySelector('.miniaturas-container');
-    const modalTitulo = document.getElementById('modal-titulo-producto');
-    const modalDescripcion = document.getElementById('modal-descripcion-producto');
-    const modalPrecioOriginal = document.getElementById('modal-precio-original');
-    const modalPrecioDescuento = document.getElementById('modal-precio-descuento');
-    const modalDescuentoBadge = document.getElementById('modal-descuento-badge');
-    const whatsappModalBtn = document.getElementById('whatsappModalBtn');
-    const whatsappFab = document.querySelector('.whatsapp-fab');
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-    const themeToggleBtn = document.getElementById('themeToggle'); // Desktop
-    const themeToggleMobileBtn = document.getElementById('themeToggleMobile'); // Mobile
-    const hamburgerMenu = document.getElementById('hamburgerMenu');
-    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
-    const closeMobileMenu = document.getElementById('closeMobileMenu');
-    const mobileNavLinks = document.querySelectorAll('#mobileNavOverlay ul li a');
-    const header = document.querySelector('.header');
+    const productsTableBody = document.querySelector('#products-table tbody');
+    const noProductsMessage = document.getElementById('no-products-message');
+    const formTitle = document.getElementById('form-title');
+    const cancelEditBtn = document.getElementById('cancel-edit-btn');
+    const messageArea = document.getElementById('message-area');
 
-    const defaultImage = 'https://placehold.co/400x250/8892B0/0A192F?text=Imagen+No+Disp';
-    const phoneNumber = '+51933450055'; // Nuevo número de teléfono
+    let isEditMode = false;
 
     // --- Funciones de Utilidad ---
 
-    /**
-     * Genera el HTML para una tarjeta de producto.
-     * @param {Object} product - Objeto producto del JSON.
-     * @param {string} cardClass - Clase CSS para el tipo de tarjeta (e.g., 'producto-card', 'collection-card', 'offer-card').
-     * @returns {string} HTML de la tarjeta de producto.
-     */
-    function createProductCardHTML(product, cardClass) {
-        const imagenSrc = (product.imagenes && product.imagenes.length > 0) ?
-            product.imagenes[0] :
-            defaultImage;
-
-        let priceHTML = `<span class="precio">S/${product.precio.toFixed(2)}</span>`;
-        let discountBadgeHTML = '';
-
-        if (product.enOferta && product.precioOriginal && product.descuento) {
-            priceHTML = `
-                <div class="price-container">
-                    <span class="original-price">S/${product.precioOriginal.toFixed(2)}</span>
-                    <span class="discounted-price">S/${product.precio.toFixed(2)}</span>
-                </div>
-            `;
-            discountBadgeHTML = `<div class="discount-badge">${product.descuento}% OFF</div>`;
-        }
-
-        return `
-            <div class="${cardClass}" data-product-id="${product.id}">
-                ${discountBadgeHTML}
-                <div class="${cardClass.replace('-card', '-image-wrapper')}">
-                    <img src="${imagenSrc}" alt="${product.nombre}" class="${cardClass.replace('-card', '-image')}" loading="lazy" onerror="this.onerror=null;this.src='${defaultImage}';">
-                </div>
-                <div class="${cardClass.replace('-card', '-info')}">
-                    <h3>${product.nombre}</h3>
-                    <p>${product.descripcion_corta}</p>
-                    ${priceHTML}
-                    <button class="ver-detalles-btn" data-product-id="${product.id}">
-                        Ver Detalles <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-        `;
+    function showMessage(message, type = 'success') {
+        messageArea.textContent = message;
+        messageArea.className = `message-area ${type}`;
+        messageArea.style.display = 'block';
+        setTimeout(() => {
+            messageArea.style.display = 'none';
+        }, 5000); // Ocultar después de 5 segundos
     }
 
-    /**
-     * Renderiza un array de productos en un contenedor dado.
-     * @param {HTMLElement} containerElement - El elemento DOM donde renderizar.
-     * @param {Array} productsToRender - Array de objetos producto.
-     * @param {string} cardClass - Clase CSS de la tarjeta (ej. 'producto-card').
-     */
-    function renderProducts(containerElement, productsToRender, cardClass) {
-        if (!containerElement) {
-            console.error(`Contenedor no encontrado.`);
+    function clearForm() {
+        productForm.reset();
+        productIdHidden.value = '';
+        productIdInput.readOnly = false; // El ID solo es editable al crear
+        formTitle.textContent = 'Añadir Nuevo Producto';
+        cancelEditBtn.style.display = 'none';
+        isEditMode = false;
+    }
+
+    async function fetchProducts() {
+        productsTableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Cargando productos...</td></tr>';
+        noProductsMessage.style.display = 'none';
+        try {
+            const response = await fetch('/.netlify/functions/get-products');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const products = await response.json();
+            renderProductsTable(products);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            productsTableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Error al cargar productos.</td></tr>';
+            showMessage('Error al cargar productos: ' + error.message, 'error');
+        }
+    }
+
+    function renderProductsTable(products) {
+        productsTableBody.innerHTML = '';
+        if (products.length === 0) {
+            noProductsMessage.style.display = 'block';
             return;
         }
-        containerElement.innerHTML = ''; // Limpiar contenido existente
+        noProductsMessage.style.display = 'none';
 
-        if (productsToRender.length === 0) {
-            containerElement.innerHTML = `<p style="text-align: center; color: var(--color-texto-secundario);">No hay productos disponibles en esta sección.</p>`;
-            return;
-        }
+        products.forEach(product => {
+            const row = productsTableBody.insertRow();
+            row.dataset.productId = product.id; // Almacena el ID en la fila
 
-        productsToRender.forEach(product => {
-            containerElement.innerHTML += createProductCardHTML(product, cardClass);
+            row.innerHTML = `
+                <td>${product.id}</td>
+                <td>${product.nombre}</td>
+                <td>S/${parseFloat(product.precio).toFixed(2)}</td>
+                <td>${product.stock || 'N/A'}</td>
+                <td>${product.categoria || 'N/A'}</td>
+                <td>${product.destacado ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>'}</td>
+                <td>${product.enOferta ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>'}</td>
+                <td>
+                    <button class="btn btn-small btn-secondary edit-btn" data-id="${product.id}"><i class="fas fa-edit"></i> Editar</button>
+                    <button class="btn btn-small btn-danger delete-btn" data-id="${product.id}"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                </td>
+            `;
+        });
+
+        attachTableEventListeners();
+    }
+
+    function attachTableEventListeners() {
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.onclick = (e) => loadProductForEdit(e.target.dataset.id);
+        });
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.onclick = (e) => deleteProduct(e.target.dataset.id);
         });
     }
 
-    // --- Carga y Renderizado de Contenido Dinámico ---
-    // Esta función ahora carga los datos desde tu Netlify Function
-    async function loadContent() {
+    async function loadProductForEdit(productId) {
         try {
-            // Llama a tu Netlify Function
-            const response = await fetch('/.netlify/functions/get-products');
+            const response = await fetch(`/.netlify/functions/get-product-by-id?id=${productId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const product = await response.json();
+
+            productIdHidden.value = product.id;
+            productIdInput.value = product.id;
+            productIdInput.readOnly = true; // No permitir cambiar el ID al editar
+            productNameInput.value = product.nombre;
+            productShortDescInput.value = product.descripcion_corta || '';
+            productLongDescInput.value = product.descripcion || '';
+            productPriceInput.value = parseFloat(product.precio).toFixed(2);
+            productOriginalPriceInput.value = product.precioOriginal ? parseFloat(product.precioOriginal).toFixed(2) : '';
+            productDiscountInput.value = product.descuento || '';
+            productImagesInput.value = (product.imagenes && product.imagenes.length > 0) ? product.imagenes.join(', ') : '';
+            productStockInput.value = product.stock || '';
+            productCategoryInput.value = product.categoria || '';
+            productFeaturedInput.checked = product.destacado || false;
+            productOnSaleInput.checked = product.enOferta || false;
+
+            formTitle.textContent = `Editar Producto: ${product.nombre}`;
+            cancelEditBtn.style.display = 'inline-block';
+            isEditMode = true;
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll al formulario
+        } catch (error) {
+            console.error('Error loading product for edit:', error);
+            showMessage('Error al cargar producto para edición: ' + error.message, 'error');
+        }
+    }
+
+    async function deleteProduct(productId) {
+        if (!confirm(`¿Estás seguro de que quieres eliminar el producto con ID: ${productId}?`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/.netlify/functions/delete-product?id=${productId}`, {
+                method: 'DELETE',
+            });
 
             if (!response.ok) {
-                throw new Error(`Error al cargar los productos: HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            productsData = await response.json(); // Asigna los datos cargados a productsData
-            console.log('Productos cargados exitosamente desde Neon:', productsData); // Para depuración
+
+            const result = await response.json();
+            showMessage(result.message || 'Producto eliminado exitosamente.', 'success');
+            fetchProducts(); // Recargar la tabla
         } catch (error) {
-            console.error('Hubo un problema al cargar los productos:', error);
-            // Mostrar un mensaje de error en la UI si la carga falla
-            const featuredGrid = document.getElementById('featuredProductsGrid');
-            const offersGrid = document.getElementById('offerProductsGrid');
-            const allProductsGrid = document.getElementById('allProductsGrid');
-
-            if (featuredGrid) featuredGrid.innerHTML = '<p style="text-align: center; color: var(--color-texto-secundario);">No se pudieron cargar los productos destacados. Inténtalo de nuevo más tarde.</p>';
-            if (offersGrid) offersGrid.innerHTML = '<p style="text-align: center; color: var(--color-texto-secundario);">No se pudieron cargar las ofertas. Inténtalo de nuevo más tarde.</p>';
-            if (allProductsGrid) allProductsGrid.innerHTML = '<p style="text-align: center; color: var(--color-texto-secundario);">No se pudieron cargar todos los productos. Inténtalo de nuevo más tarde.</p>';
-
-            return; // Detiene la ejecución de renderizado si los datos no se cargan
+            console.error('Error deleting product:', error);
+            showMessage('Error al eliminar producto: ' + error.message, 'error');
         }
-
-        const path = window.location.pathname;
-
-        // Renderizar para index.html
-        if (path.includes('/index.html') || path === '/') {
-            const featuredGrid = document.getElementById('featuredProductsGrid');
-            const offersGrid = document.getElementById('offerProductsGrid');
-
-            if (featuredGrid) {
-                const featuredProducts = productsData.filter(p => p.destacado);
-                renderProducts(featuredGrid, featuredProducts, 'collection-card');
-            }
-
-            if (offersGrid) {
-                const offerProducts = productsData.filter(p => p.enOferta);
-                renderProducts(offersGrid, offerProducts, 'offer-card');
-            }
-        }
-
-        // Renderizar para catalogo.html
-        if (path.endsWith('/catalogo.html') || document.getElementById('allProductsGrid')) {
-            const allProductsGrid = document.getElementById('allProductsGrid');
-            if (allProductsGrid) {
-                renderProducts(allProductsGrid, productsData, 'producto-card');
-            }
-        }
-
-        // Después de renderizar las tarjetas, adjuntar los event listeners para el modal
-        attachModalEventListeners();
     }
 
-    // --- Lógica del Modal ---
+    // --- Event Listeners ---
 
-    /**
-     * Adjunta los event listeners a los botones "Ver Detalles".
-     * Se llama después de que las tarjetas de producto son renderizadas dinámicamente.
-     */
-    function attachModalEventListeners() {
-        // Selecciona todos los botones con la clase 'ver-detalles-btn'
-        document.querySelectorAll('.ver-detalles-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                // Obtiene el ID del producto del atributo data-product-id del botón
-                const productId = event.currentTarget.dataset.productId;
-                // Busca el producto correspondiente en el arreglo productsData
-                const selectedProduct = productsData.find(p => p.id === productId);
+    productForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-                if (selectedProduct) {
-                    openModal(selectedProduct); // Abre el modal con los datos del producto
-                } else {
-                    console.warn(`Producto con ID ${productId} no encontrado.`);
-                }
-            });
-        });
-    }
+        const productData = {
+            id: productIdInput.value.trim(),
+            nombre: productNameInput.value.trim(),
+            descripcion: productLongDescInput.value.trim(),
+            descripcion_corta: productShortDescInput.value.trim(),
+            precio: parseFloat(productPriceInput.value),
+            precioOriginal: productOriginalPriceInput.value ? parseFloat(productOriginalPriceInput.value) : null,
+            descuento: productDiscountInput.value ? parseInt(productDiscountInput.value) : null,
+            imagenes: productImagesInput.value.split(',').map(url => url.trim()).filter(url => url !== ''),
+            stock: productStockInput.value ? parseInt(productStockInput.value) : null,
+            categoria: productCategoryInput.value.trim(),
+            destacado: productFeaturedInput.checked,
+            enOferta: productOnSaleInput.checked,
+        };
 
-    /**
-     * Abre el modal y muestra los detalles del producto.
-     * @param {Object} product - El objeto producto a mostrar.
-     */
-    function openModal(product) {
-        modalImagenPrincipal.src = product.imagenes[0] || defaultImage;
-        modalImagenPrincipal.alt = product.nombre;
+        // Validaciones básicas
+        if (!productData.id || !productData.nombre || isNaN(productData.precio)) {
+            showMessage('Por favor, completa los campos obligatorios (ID, Nombre, Precio válido).', 'error');
+            return;
+        }
+        if (productData.imagenes.length === 0) {
+            showMessage('Por favor, introduce al menos una URL de imagen.', 'error');
+            return;
+        }
 
-        modalMiniaturasContainer.innerHTML = '';
-        if (product.imagenes && product.imagenes.length > 0) {
-            product.imagenes.forEach((imgSrc, index) => {
-                const img = document.createElement('img');
-                img.src = imgSrc;
-                img.alt = `Vista ${index + 1} de ${product.nombre}`;
-                img.classList.add('miniatura');
-                if (index === 0) img.classList.add('activa'); // Marca la primera imagen como activa
-                img.addEventListener('click', () => {
-                    modalImagenPrincipal.src = imgSrc; // Cambia la imagen principal al hacer clic
-                    // Quita la clase 'activa' de todas las miniaturas y añádela a la que se hizo clic
-                    document.querySelectorAll('.miniatura').forEach(thumb => thumb.classList.remove('activa'));
-                    img.classList.add('activa');
+        try {
+            let response;
+            if (isEditMode) {
+                response = await fetch(`/.netlify/functions/update-product?id=${productIdHidden.value}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData),
                 });
-                modalMiniaturasContainer.appendChild(img);
-            });
-        } else {
-            modalMiniaturasContainer.innerHTML = `<p style="color: var(--color-texto-secundario); font-size: 0.85rem;">No hay miniaturas disponibles.</p>`;
-        }
-
-        modalTitulo.textContent = product.nombre;
-        modalDescripcion.textContent = product.descripcion;
-
-        // Lógica para mostrar precios con y sin descuento
-        if (product.enOferta && product.precioOriginal && product.descuento) {
-            modalPrecioOriginal.textContent = `S/${parseFloat(product.precioOriginal).toFixed(2)}`;
-            modalPrecioOriginal.style.display = 'inline-block'; // Muestra el precio original
-            modalPrecioDescuento.textContent = `S/${parseFloat(product.precio).toFixed(2)}`;
-            modalDescuentoBadge.textContent = `${product.descuento}% OFF`;
-            modalDescuentoBadge.style.display = 'inline-block'; // Muestra la insignia de descuento
-        } else {
-            modalPrecioOriginal.style.display = 'none'; // Oculta el precio original
-            modalPrecioDescuento.textContent = `S/${parseFloat(product.precio).toFixed(2)}`;
-            modalDescuentoBadge.style.display = 'none'; // Oculta la insignia
-        }
-
-        // Configuración del mensaje de WhatsApp
-        let whatsappMessage = '';
-        let productPriceText = `S/${parseFloat(product.precio).toFixed(2)}`;
-        if (product.enOferta && product.precioOriginal) {
-            productPriceText = `S/${parseFloat(product.precio).toFixed(2)} (Antes S/${parseFloat(product.precioOriginal).toFixed(2)}, ${product.descuento}% OFF)`;
-        }
-
-        if (typeof product.stock === 'number') {
-            if (product.stock > 0) {
-                whatsappModalBtn.textContent = 'Preguntar por WhatsApp';
-                whatsappModalBtn.classList.remove('disabled');
-                whatsappMessage = `Hola! Estoy interesado en la gorra "${product.nombre}" (ID: ${product.id}).`;
-                whatsappMessage += `\nSu precio es: ${productPriceText}.`;
-                whatsappMessage += `\n¿Me podrías confirmar si está disponible y si tienen más fotos?`;
             } else {
-                whatsappModalBtn.textContent = 'Producto Agotado';
-                whatsappModalBtn.classList.add('disabled');
-                whatsappModalBtn.href = "#"; // Deshabilita el enlace si está agotado
-                whatsappMessage = ''; // No envía mensaje si está agotado
-            }
-        } else { // Si el stock no es un número (ej. undefined o null)
-            whatsappModalBtn.textContent = 'Preguntar por WhatsApp';
-            whatsappModalBtn.classList.remove('disabled');
-            whatsappMessage = `Hola! Estoy interesado en la gorra "${product.nombre}" (ID: ${product.id}).`;
-            whatsappMessage += `\nSu precio es: ${productPriceText}.`;
-            whatsappMessage += `\n¿Podrías darme más información sobre este producto?`;
-        }
-
-        // Establece el enlace de WhatsApp con el mensaje codificado
-        if (whatsappMessage) {
-            whatsappModalBtn.href = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(whatsappMessage)}`;
-        } else {
-            whatsappModalBtn.href = `https://wa.me/${phoneNumber.replace('+', '')}`;
-        }
-
-        modalProducto.style.display = 'flex'; // Muestra el modal
-        document.body.style.overflow = 'hidden'; // Evita el scroll en el body cuando el modal está abierto
-    }
-
-    /**
-     * Cierra el modal de producto.
-     */
-    function closeModal() {
-        modalProducto.style.display = 'none'; // Oculta el modal
-        document.body.style.overflow = ''; // Restaura el scroll del body
-    }
-
-    // Event listeners para cerrar el modal
-    if (cerrarModalBtn) {
-        cerrarModalBtn.addEventListener('click', closeModal);
-    }
-    // Cierra el modal si se hace clic fuera de él
-    window.addEventListener('click', (event) => {
-        if (event.target === modalProducto) {
-            closeModal();
-        }
-    });
-
-    // --- Funcionalidad del Tema Claro/Oscuro ---
-    function applyTheme(isLightMode) {
-        if (isLightMode) {
-            document.body.classList.add('light-mode');
-            localStorage.setItem('theme', 'light-mode');
-            const iconHTML = '<i class="fas fa-moon"></i> Modo Oscuro';
-            if (themeToggleBtn) themeToggleBtn.innerHTML = iconHTML;
-            if (themeToggleMobileBtn) themeToggleMobileBtn.innerHTML = iconHTML;
-        } else {
-            document.body.classList.remove('light-mode');
-            localStorage.setItem('theme', 'dark-mode');
-            const iconHTML = '<i class="fas fa-sun"></i> Modo Claro';
-            if (themeToggleBtn) themeToggleBtn.innerHTML = iconHTML;
-            if (themeToggleMobileBtn) themeToggleMobileBtn.innerHTML = iconHTML;
-        }
-    }
-
-    // Cargar el tema guardado o establecer el predeterminado (dark)
-    const currentTheme = localStorage.getItem('theme');
-    applyTheme(currentTheme === 'light-mode');
-
-    // Event listeners para los botones de cambio de tema
-    [themeToggleBtn, themeToggleMobileBtn].forEach(btn => {
-        if (btn) {
-            btn.addEventListener('click', () => {
-                applyTheme(!document.body.classList.contains('light-mode')); // Invierte el tema actual
-            });
-        }
-    });
-
-    // --- Funcionalidad del Menú Hamburguesa (Mobile) ---
-    if (hamburgerMenu) {
-        hamburgerMenu.addEventListener('click', () => {
-            mobileNavOverlay.classList.add('active'); // Muestra el overlay del menú móvil
-            document.body.style.overflow = 'hidden'; // Deshabilita el scroll del body
-        });
-    }
-
-    if (closeMobileMenu) {
-        closeMobileMenu.addEventListener('click', () => {
-            mobileNavOverlay.classList.remove('active'); // Oculta el overlay
-            document.body.style.overflow = ''; // Habilita el scroll del body
-        });
-    }
-
-    // Cierra el menú móvil al hacer clic en un enlace
-    mobileNavLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileNavOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-    });
-
-    // Cierra el menú móvil si se hace clic fuera del overlay y del botón de hamburguesa
-    window.addEventListener('click', (event) => {
-        if (mobileNavOverlay.classList.contains('active') &&
-            !mobileNavOverlay.contains(event.target) &&
-            !hamburgerMenu.contains(event.target)) {
-            mobileNavOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    });
-
-
-    // --- Funcionalidad de Scroll-to-top y ocultar/mostrar header ---
-    let lastScrollY = 0;
-    const scrollThreshold = 50; // Umbral de scroll para ocultar el header
-
-    if (scrollToTopBtn) {
-        window.addEventListener('scroll', () => {
-            // Visibilidad del botón "Volver arriba"
-            if (window.scrollY > 300) {
-                scrollToTopBtn.classList.add('show'); // Muestra el botón
-            } else {
-                scrollToTopBtn.classList.remove('show'); // Oculta el botón
+                response = await fetch('/.netlify/functions/create-product', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData),
+                });
             }
 
-            // Visibilidad del header (ocultar al hacer scroll hacia abajo, mostrar al scroll hacia arriba)
-            if (header) { // Asegura que el header existe en el DOM
-                if (window.scrollY > lastScrollY && window.scrollY > scrollThreshold) {
-                    header.classList.add('hidden'); // Oculta el header
-                } else if (window.scrollY < lastScrollY) {
-                    header.classList.remove('hidden'); // Muestra el header
-                }
-
-                // Asegura que el header siempre se vea al principio de la página
-                if (window.scrollY === 0) {
-                    header.classList.remove('hidden');
-                }
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
-            lastScrollY = window.scrollY; // Actualiza la última posición de scroll
-        });
 
-        // Event listener para el botón "Volver arriba"
-        scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' // Scroll suave
-            });
-        });
-    }
+            const result = await response.json();
+            showMessage(`Producto ${isEditMode ? 'actualizado' : 'creado'} exitosamente: ${result.nombre}`, 'success');
+            clearForm();
+            fetchProducts(); // Recargar la tabla con los nuevos datos
+        } catch (error) {
+            console.error(`Error ${isEditMode ? 'actualizando' : 'creando'} producto:`, error);
+            showMessage(`Error al ${isEditMode ? 'actualizar' : 'crear'} producto: ` + error.message, 'error');
+        }
+    });
 
-    // --- Configuración Inicial de Enlaces de WhatsApp FAB (Floating Action Button) ---
-    if (whatsappFab) {
-        whatsappFab.href = `https://wa.me/${phoneNumber.replace('+', '')}`;
-    }
+    cancelEditBtn.addEventListener('click', clearForm);
 
-    // --- INICIALIZACIÓN ---
-    // Llama a la función asíncrona para cargar los productos y renderizar el contenido
-    // Esta es la primera acción importante que se ejecuta cuando el DOM está listo
-    loadContent();
+    // --- Inicialización ---
+    fetchProducts();
 });
