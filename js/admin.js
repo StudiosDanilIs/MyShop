@@ -1,10 +1,7 @@
 // js/admin.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    const adminKeyInput = document.getElementById('adminKeyInput');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginMessage = document.getElementById('loginMessage');
-    const adminPanel = document.getElementById('admin-panel');
+    // Elementos de login ELIMINADOS
 
     const productForm = document.getElementById('productForm');
     const statusMessage = document.getElementById('statusMessage');
@@ -21,39 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => statusMessage.textContent = '', 5000); // Limpiar mensaje después de 5 segundos
     }
 
-    // --- Lógica de Inicio de Sesión ---
-    loginBtn.addEventListener('click', () => {
-        const enteredKey = adminKeyInput.value.trim();
-        // NOTA: En un entorno real, no validarías la clave aquí en el frontend.
-        // Enviarías al backend para validar y recibir un token de sesión.
-        // Para esta demo, simplemente guardamos la clave para enviarla en los headers.
-
-        if (enteredKey) {
-            localStorage.setItem('adminKey', enteredKey); // Guardar la clave en localStorage
-            loginMessage.textContent = 'Clave guardada. Intentando cargar productos...';
-            loginMessage.className = 'message success';
-            loadProducts(); // Intentar cargar productos (que ahora enviará la clave)
-        } else {
-            loginMessage.textContent = 'Por favor, ingresa una clave.';
-            loginMessage.className = 'message error';
-        }
-    });
+    // Lógica de Inicio de Sesión ELIMINADA
 
     // --- Funciones CRUD ---
 
     // Función para realizar peticiones a la API
     async function apiRequest(method, endpoint, data = null) {
-        const adminKey = localStorage.getItem('adminKey');
-        if (!adminKey) {
-            showMessage('Error: Clave de administrador no encontrada. Por favor, inicia sesión.', 'error');
-            return null;
-        }
-
         const options = {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
-                'X-Admin-Key': adminKey // Envía la clave en el header
+                // 'X-Admin-Key' ELIMINADO
             },
             body: data ? JSON.stringify(data) : null
         };
@@ -76,20 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cargar productos
     async function loadProducts() {
-        const adminKey = localStorage.getItem('adminKey');
-        if (!adminKey) { // Si no hay clave, no intentes cargar productos todavía para el panel
-            adminPanel.style.display = 'none';
-            loginSection.style.display = 'block';
-            return;
-        } else {
-             // Si hay una clave, intentamos mostrar el panel.
-             // La función product.js ya no requiere clave para GET, solo para POST/PUT/DELETE
-             // Así que podemos cargar la lista de productos
-             adminPanel.style.display = 'block';
-             loginSection.style.display = 'none';
-        }
-
-        const products = await apiRequest('GET', '', null); // GET no necesita clave para esta demo
+        // Lógica de validación de clave ELIMINADA. El panel siempre es visible.
+        const products = await apiRequest('GET', '', null);
         if (products) {
             productList.innerHTML = '';
             if (products.length === 0) {
@@ -160,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     productList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('edit-btn')) {
             const productId = e.target.dataset.id;
-            const productToEdit = (await apiRequest('GET', `?id=${productId}`))[0]; // Obtener el producto específico
+            const productToEdit = await apiRequest('GET', `?id=${productId}`); // Obtener el producto específico
             
             if (productToEdit) {
                 document.getElementById('id').value = productToEdit.id;
@@ -208,9 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Cargar productos al inicio si ya hay una clave guardada
-    if (localStorage.getItem('adminKey')) {
-        adminKeyInput.value = localStorage.getItem('adminKey'); // Precargar la clave si existe
-        loadProducts(); // Intentar cargar productos
-    }
+    // Cargar productos al inicio (ya no se verifica la clave)
+    loadProducts();
 });
