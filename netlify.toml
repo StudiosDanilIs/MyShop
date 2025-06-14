@@ -1,0 +1,7 @@
+[build]
+  command = "npm install" # Instala tus dependencias de Node.js
+  publish = "." # La carpeta a desplegar (tu HTML, CSS, JS, etc.)
+  functions = "netlify/functions" # Donde Netlify buscará tus funciones
+
+[functions]
+  node_bundler = "esbuild" # Para una compilación más rápida de funciones
