@@ -12,6 +12,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "busboy": "^1.6.0",
-    "cloudinary": "^2.6.1"
+    "cloudinary": "^2.6.1",
+    "pg": "^8.16.0"
   }
 }
