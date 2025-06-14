@@ -1,0 +1,445 @@
+/* ===================================== */
+/* Archivo CSS específico para el Catálogo y Secciones de Productos */
+/* ===================================== */
+
+/* --- Grids Principales para Listado de Productos --- */
+/* Aplica un diseño de cuadrícula flexible a las secciones de catálogo,
+   productos destacados y ofertas, permitiendo un diseño responsivo. */
+.catalogo-grid,
+.collection-grid,
+.offers-grid {
+    display: grid;
+    /* Ajusta automáticamente el número de columnas para que cada una tenga al menos 300px,
+       ocupando el espacio disponible de manera uniforme (1fr). */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    /* Espacio entre las tarjetas de productos */
+    margin-top: 2rem;
+    /* Margen superior para separar del contenido anterior */
+}
+
+/* --- Estilos Base para Tarjetas de Productos --- */
+/* Define el aspecto general de cada tarjeta de producto, ya sea en el catálogo,
+   colecciones destacadas u ofertas. */
+.producto-card,
+.collection-card,
+.offer-card {
+    background: var(--color-gris-claro);
+    /* Fondo de la tarjeta (modo oscuro por defecto) */
+    border-radius: var(--radio-borde);
+    /* Bordes redondeados */
+    overflow: hidden;
+    /* Asegura que el contenido interno no se desborde, útil para imágenes */
+    box-shadow: 0 4px 15px var(--color-sombra);
+    /* Sombra suave para profundidad */
+    transition: var(--transicion-rapida);
+    /* Transición suave para efectos hover */
+    display: flex;
+    /* Utiliza flexbox para organizar el contenido verticalmente */
+    flex-direction: column;
+    /* Organiza los elementos en columna */
+    position: relative;
+    /* Necesario para posicionar el badge de descuento */
+    cursor: pointer;
+    /* Indica que la tarjeta es interactiva (clicable) */
+    min-height: 440px;
+    /* Altura mínima para asegurar que las tarjetas se vean bien en desktop */
+}
+
+/* Ajuste del color de fondo de las tarjetas en modo claro */
+body.light-mode .producto-card,
+body.light-mode .collection-card,
+body.light-mode .offer-card {
+    background: var(--light-fondo);
+    /* Fondo de la tarjeta en modo claro */
+}
+
+/* Efecto hover para las tarjetas de productos */
+.producto-card:hover,
+.collection-card:hover,
+.offer-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    /* Ligeramente se eleva y agranda */
+    box-shadow: 0 15px 40px var(--color-sombra-hover);
+    /* Sombra más pronunciada al hacer hover */
+}
+
+/* --- Contenedores de Imagen de Producto --- */
+/* Define el tamaño y el comportamiento del área de la imagen dentro de la tarjeta. */
+.producto-image-wrapper,
+.collection-image-wrapper,
+.offer-image-wrapper {
+    width: 100%;
+    /* Ocupa todo el ancho del padre */
+    height: 250px;
+    /* Altura fija para un diseño consistente */
+    overflow: hidden;
+    /* Oculta cualquier parte de la imagen que se desborde */
+    position: relative;
+    background: var(--color-gris-medio);
+    /* Fondo de respaldo para el contenedor de imagen */
+    display: flex;
+    /* Para centrar la imagen si es necesario */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ajuste del color de fondo del contenedor de imagen en modo claro */
+body.light-mode .producto-image-wrapper,
+body.light-mode .collection-image-wrapper,
+body.light-mode .offer-image-wrapper {
+    background: var(--light-gris-claro);
+}
+
+/* Estilos para la imagen del producto en sí */
+.producto-image,
+.collection-image,
+.offer-image {
+    width: 100%;
+    height: 100%;
+    /* La imagen llenará las dimensiones del contenedor */
+    object-fit: cover;
+    /* Recorta la imagen para que cubra todo el contenedor */
+    object-position: center;
+    /* Centra la imagen dentro de su contenedor */
+    transition: var(--transicion-rapida);
+    /* Transición para el efecto de escala al hacer hover */
+}
+
+/* Efecto de escala en la imagen al hacer hover sobre la tarjeta */
+.producto-card:hover .producto-image,
+.collection-card:hover .collection-image,
+.offer-card:hover .offer-image {
+    transform: scale(1.1);
+    /* Agranda la imagen un 10% */
+}
+
+/* --- Información del Producto (Título, Descripción, Precios) --- */
+/* Contenedor para el texto y los precios del producto. */
+.producto-info,
+.collection-info,
+.offer-info {
+    padding: 1.5rem;
+    /* Espaciado interno */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* Permite que este contenedor ocupe el espacio restante */
+    justify-content: space-between;
+    /* Espacia el contenido verticalmente */
+}
+
+/* Títulos de los productos */
+.producto-info h3,
+.collection-info h3,
+.offer-info h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-texto-principal);
+    /* Color de texto principal del tema */
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    /* Altura de línea para una mejor legibilidad */
+}
+
+/* Descripciones de los productos */
+.producto-info p,
+.collection-info p,
+.offer-info p {
+    color: var(--color-texto-secundario);
+    /* Color de texto secundario */
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+    /* Permite que la descripción ocupe espacio flexible */
+    line-height: 1.5;
+    overflow: hidden;
+    /* Oculta el texto que desborda */
+    text-overflow: ellipsis;
+    /* Agrega puntos suspensivos (...) al final */
+    display: -webkit-box;
+    /* Requerido para -webkit-line-clamp */
+    line-clamp: 3;
+    /* Limita la descripción a 3 líneas */
+    -webkit-line-clamp: 3;
+    /* Limita la descripción a 3 líneas */
+    -webkit-box-orient: vertical;
+    /* Necesario para que -webkit-line-clamp funcione */
+}
+
+/* --- Estilos para Precios --- */
+.precio,
+.price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    /* Degradado de color para el precio, usando las variables de tema */
+    background: linear-gradient(135deg, var(--color-secundario), var(--color-acento));
+    -webkit-background-clip: text;
+    /* Recorta el fondo al texto para navegadores WebKit */
+    -webkit-text-fill-color: transparent;
+    /* Hace que el texto sea transparente para mostrar el fondo */
+    background-clip: text;
+    /* Estándar para recortar el fondo al texto */
+    margin-bottom: 1rem;
+}
+
+/* Precio original (tachado) */
+.original-price {
+    text-decoration: line-through;
+    /* Raya el texto */
+    color: var(--color-gris-oscuro);
+    /* Color gris para indicar que es un precio anterior */
+    font-size: 1rem;
+    margin-right: 0.5rem;
+}
+
+/* Precio con descuento (con el mismo degradado que el precio principal) */
+.discounted-price {
+    background: linear-gradient(135deg, var(--color-secundario), var(--color-acento));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+/* --- Badge de Descuento (Etiqueta de "Oferta") --- */
+.discount-badge {
+    position: absolute;
+    /* Posiciona el badge de forma absoluta dentro de la tarjeta */
+    top: 1rem;
+    /* 1rem desde la parte superior */
+    right: 1rem;
+    /* 1rem desde la derecha */
+    background: linear-gradient(135deg, var(--color-secundario), var(--color-acento));
+    /* Degradado de color */
+    color: var(--color-primario);
+    /* Color del texto del badge (contrasta con el fondo) */
+    padding: 0.4rem 0.8rem;
+    border-radius: 25px;
+    /* Bordes muy redondeados (forma de píldora) */
+    font-size: 0.8rem;
+    font-weight: 700;
+    z-index: 10;
+    /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 2px 10px rgba(0, 173, 181, 0.3);
+    /* Sombra para el badge */
+}
+
+/* --- Botón "Ver Detalles" --- */
+.ver-detalles-btn {
+    background: linear-gradient(135deg, var(--color-primario), #112240);
+    /* Degradado oscuro */
+    color: var(--color-blanco);
+    /* Texto blanco */
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 25px;
+    /* Bordes redondeados */
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transicion-rapida);
+    /* Transición para efectos hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    /* Espacio entre el texto y el icono */
+    text-decoration: none;
+    /* Elimina el subrayado de los enlaces */
+    margin-top: auto;
+    /* Empuja el botón al final de la tarjeta flex */
+    position: relative;
+    /* Necesario para el efecto ::before */
+    overflow: hidden;
+    /* Oculta el pseudo-elemento ::before fuera de los límites iniciales */
+}
+
+/* Ajuste del color del botón en modo claro */
+body.light-mode .ver-detalles-btn {
+    background: linear-gradient(135deg, var(--light-primario), #333);
+    color: var(--color-blanco);
+}
+
+/* Efecto de "brillo" al pasar el ratón por el botón */
+.ver-detalles-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    /* Inicia fuera del botón a la izquierda */
+    width: 100%;
+    height: 100%;
+    /* Degradado blanco transparente para el efecto de brillo */
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease-in-out;
+    /* Transición para el movimiento */
+}
+
+/* Mueve el brillo de izquierda a derecha al hacer hover */
+.ver-detalles-btn:hover::before {
+    left: 100%;
+}
+
+/* Efecto de hover en el botón */
+.ver-detalles-btn:hover {
+    background: linear-gradient(135deg, var(--color-secundario), var(--color-acento));
+    /* Cambia al degradado de acento */
+    transform: translateY(-2px);
+    /* Ligeramente se eleva */
+    box-shadow: 0 5px 15px rgba(0, 173, 181, 0.3);
+    /* Sombra sutil */
+}
+
+/* ===================================== */
+/* Responsive Design para Tarjetas de Productos */
+/* ===================================== */
+
+/* --- Móviles (hasta 767px de ancho) --- */
+/* Dos gorras por fila en la mayoría de los móviles */
+@media (max-width: 767px) {
+
+    .catalogo-grid,
+    .collection-grid,
+    .offers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* Dos columnas de igual ancho */
+        gap: 1.5rem;
+        /* Espacio reducido entre tarjetas */
+    }
+
+    .producto-card,
+    .collection-card,
+    .offer-card {
+        min-height: 380px;
+        /* Altura mínima ligeramente reducida para móviles */
+    }
+
+    .producto-image-wrapper,
+    .collection-image-wrapper,
+    .offer-image-wrapper {
+        height: 180px;
+        /* Altura de la imagen reducida para pantallas pequeñas */
+    }
+
+    .producto-info h3,
+    .collection-info h3,
+    .offer-info h3 {
+        font-size: 1.1rem;
+        /* Título más pequeño */
+    }
+
+    .producto-info p,
+    .collection-info p,
+    .offer-info p {
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        /* Limita la descripción a 2 líneas para ahorrar espacio */
+        font-size: 0.85rem;
+        /* Fuente más pequeña para la descripción */
+    }
+
+    .precio,
+    .price,
+    .discounted-price {
+        font-size: 1.25rem;
+        /* Precios más pequeños */
+    }
+
+    .original-price {
+        font-size: 0.8rem;
+    }
+
+    .discount-badge {
+        font-size: 0.7rem;
+        /* Badge más pequeño */
+        padding: 0.3rem 0.6rem;
+    }
+
+    .ver-detalles-btn {
+        padding: 0.7rem 1rem;
+        /* Botón más compacto */
+        font-size: 0.9rem;
+    }
+}
+
+/* --- Móviles muy pequeños (hasta 480px de ancho) --- */
+/* Una columna para asegurar la legibilidad en pantallas muy estrechas */
+@media (max-width: 480px) {
+
+    .catalogo-grid,
+    .collection-grid,
+    .offers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* Una columna única */
+        gap: 0.3rem;
+    }
+
+    .producto-card,
+    .collection-card,
+    .offer-card {
+        min-height: 300px;
+        /* Altura mínima aún más compacta */
+    }
+
+    .producto-image-wrapper,
+    .collection-image-wrapper,
+    .offer-image-wrapper {
+        height: 160px;
+        /* La imagen puede ser un poco más alta en una sola columna */
+    }
+
+    .producto-info,
+    .collection-info,
+    .offer-info {
+        padding: 0.3rem;
+        /* Padding interno reducido */
+    }
+}
+
+/* --- Tablets (entre 768px y 1023px de ancho) --- */
+/* Tres gorras por fila para un mejor uso del espacio en tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    .catalogo-grid,
+    .collection-grid,
+    .offers-grid {
+        grid-template-columns: repeat(3, 1fr);
+        /* Tres columnas de igual ancho */
+        gap: 2rem;
+    }
+
+    .producto-card,
+    .collection-card,
+    .offer-card {
+        min-height: 400px;
+        /* Altura mínima ajustada para tablets */
+    }
+
+    .producto-image-wrapper,
+    .collection-image-wrapper,
+    .offer-image-wrapper {
+        height: 200px;
+        /* Altura de imagen para tablets */
+    }
+}
+
+/* --- Desktops (1024px de ancho en adelante) --- */
+/* Vuelve al diseño original o ajusta para pantallas más grandes */
+@media (min-width: 1024px) {
+
+    .catalogo-grid,
+    .collection-grid,
+    .offers-grid {
+        /* Permite 3 o 4 columnas dependiendo del espacio, con un mínimo de 280px por columna */
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    /* La min-height general definida al inicio es suficiente para desktops */
+    .producto-image-wrapper,
+    .collection-image-wrapper,
+    .offer-image-wrapper {
+        height: 250px;
+        /* Altura de imagen por defecto en desktop */
+    }
+}

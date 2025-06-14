@@ -1,0 +1,225 @@
+/* ===================================== */
+/* Archivo CSS específico para la página de Inicio (inicio.html) */
+/* Contiene estilos para la sección Hero, Colecciones Destacadas y Ofertas. */
+/* ===================================== */
+
+/* --- Sección Hero - Banner Principal --- */
+/* Estilos para el banner de bienvenida con un diseño atractivo. */
+.hero {
+    /* Fondo con un degradado de tonos de azul profundo para un aspecto moderno */
+    background: linear-gradient(135deg, var(--color-primario) 0%, #173B6F 50%, #0A192F 100%);
+    color: var(--color-blanco);
+    /* Color de texto blanco para contrastar */
+    padding: 140px 0 100px;
+    /* Espaciado interno superior, inferior y lateral */
+    text-align: center;
+    /* Centra el contenido de texto */
+    margin-top: 80px;
+    /* Margen superior, probablemente para dejar espacio al header fijo */
+    position: relative;
+    /* Necesario para posicionar el pseudo-elemento ::before */
+    overflow: hidden;
+    /* Oculta cualquier contenido o pseudo-elemento que se desborde */
+}
+
+/* Ajuste del fondo de la sección Hero para el modo claro */
+body.light-mode .hero {
+    /* Un degradado de azul oscuro similar, o puedes ajustarlo a tonos más claros si prefieres */
+    background: linear-gradient(135deg, #1A2B40 0%, #3A4B60 50%, #1A2B40 100%);
+    color: var(--color-blanco);
+    /* El texto blanco se mantiene para buena legibilidad */
+}
+
+/* Pseudo-elemento para efectos visuales sutiles en el fondo del Hero */
+.hero::before {
+    content: '';
+    /* Contenido vacío para el pseudo-elemento */
+    position: absolute;
+    /* Posicionamiento absoluto dentro del Hero */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Dos degradados radiales para crear "esferas de luz" o destellos */
+    background:
+        radial-gradient(circle at 20% 80%, var(--color-secundario) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--color-acento) 0%, transparent 50%);
+    opacity: 0.1;
+    /* Baja opacidad para que sean sutiles */
+    pointer-events: none;
+    /* Asegura que el pseudo-elemento no interfiera con interacciones del usuario */
+}
+
+/* Ajuste de los efectos visuales del Hero para el modo claro */
+body.light-mode .hero::before {
+    /* Tonos de azul más claros y sutiles para el modo claro */
+    background:
+        radial-gradient(circle at 20% 80%, rgba(0, 123, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+}
+
+/* Contenido principal del Hero (títulos, párrafos, botón) */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    /* Asegura que el contenido esté por encima del pseudo-elemento ::before */
+}
+
+/* Título principal del Hero (H1) */
+.hero-content h1 {
+    font-size: 3.5rem;
+    /* Tamaño de fuente grande */
+    font-weight: 800;
+    /* Peso de fuente extra-negrita */
+    margin-bottom: 1.5rem;
+    /* Espacio debajo del título */
+    /* Degradado animado para el texto del título */
+    background: linear-gradient(135deg, var(--color-secundario), var(--color-acento), var(--color-secundario), var(--color-acento));
+    background-size: 400% 400%;
+    /* Tamaño del fondo para la animación */
+    -webkit-background-clip: text;
+    /* Recorta el fondo al texto (WebKit) */
+    -webkit-text-fill-color: transparent;
+    /* Hace que el texto sea transparente para mostrar el fondo (WebKit) */
+    background-clip: text;
+    /* Recorta el fondo al texto (estándar) */
+    animation: animated-gradient 5s ease-in-out infinite;
+    /* Aplica la animación */
+}
+
+/* Keyframes para la animación del degradado del texto */
+@keyframes animated-gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    /* Inicia en el 0% horizontal del fondo */
+    50% {
+        background-position: 100% 50%;
+    }
+
+    /* Se mueve al 100% horizontal */
+    100% {
+        background-position: 0% 50%;
+    }
+
+    /* Vuelve al inicio, creando un ciclo */
+}
+
+/* Párrafo de descripción en el Hero */
+.hero-content p {
+    font-size: 1.3rem;
+    margin-bottom: 2.5rem;
+    /* Espacio debajo del párrafo */
+    opacity: 0.9;
+    /* Ligera transparencia */
+    max-width: 600px;
+    /* Ancho máximo para el párrafo para mejor legibilidad */
+    margin-left: auto;
+    /* Centra el párrafo horizontalmente */
+    margin-right: auto;
+    /* Centra el párrafo horizontalmente */
+}
+
+/* Botón de Llamada a la Acción (CTA) */
+.cta-button {
+    display: inline-flex;
+    /* Permite que el icono y el texto estén en línea */
+    align-items: center;
+    /* Centra verticalmente el contenido */
+    gap: 0.7rem;
+    /* Espacio entre el icono y el texto */
+    /* Fondo con un degradado de color */
+    background: linear-gradient(135deg, var(--color-secundario), var(--color-acento));
+    color: var(--color-primario);
+    /* Color de texto que contrasta con el degradado del botón */
+    padding: 1.2rem 2.5rem;
+    /* Espaciado interno del botón */
+    text-decoration: none;
+    /* Elimina el subrayado del enlace */
+    border-radius: 50px;
+    /* Bordes muy redondeados (forma de píldora) */
+    font-weight: 700;
+    /* Texto en negrita */
+    font-size: 1.1rem;
+    transition: var(--transicion-rapida);
+    /* Transición suave para efectos hover */
+    box-shadow: 0 8px 25px rgba(0, 173, 181, 0.3);
+    /* Sombra suave basada en el color de acento */
+    position: relative;
+    /* Necesario para el efecto ::before */
+    overflow: hidden;
+    /* Oculta el pseudo-elemento ::before fuera del botón */
+}
+
+/* Pseudo-elemento para el efecto de "brillo" en el botón CTA */
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    /* Posiciona el brillo inicialmente fuera del botón a la izquierda */
+    width: 100%;
+    height: 100%;
+    /* Degradado blanco transparente para el efecto de brillo */
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+    /* Transición para el movimiento del brillo */
+}
+
+/* Mueve el brillo a la derecha al hacer hover sobre el botón */
+.cta-button:hover::before {
+    left: 100%;
+}
+
+/* Efecto hover en el botón CTA */
+.cta-button:hover {
+    transform: translateY(-3px);
+    /* Ligeramente se eleva */
+    box-shadow: 0 12px 35px rgba(0, 173, 181, 0.4);
+    /* Sombra más pronunciada al hacer hover */
+}
+
+/* ===================================== */
+/* Responsive Design para la Página de Inicio */
+/* ===================================== */
+
+/* --- Media Query para Tablets y Móviles Grandes (hasta 768px de ancho) --- */
+@media (max-width: 768px) {
+    .hero {
+        padding: 100px 0 70px;
+        /* Reduce el padding en el Hero */
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+        /* Reduce el tamaño del título principal */
+    }
+
+    .hero-content p {
+        font-size: 1.15rem;
+        /* Ajusta el tamaño de la descripción */
+    }
+
+    .cta-button {
+        padding: 1rem 2rem;
+        /* Reduce el padding del botón CTA */
+        font-size: 1rem;
+        /* Reduce el tamaño de fuente del botón */
+    }
+}
+
+/* --- Media Query para Móviles Pequeños (hasta 480px de ancho) --- */
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2.2rem;
+        /* Reduce aún más el tamaño del título principal */
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+        /* Ajusta la fuente del párrafo para pantallas muy pequeñas */
+        margin-bottom: 2rem;
+        /* Ajusta el margen inferior */
+    }
+}

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Vacano Store Perú: Tu tienda online de gorras en Perú con diseños únicos, calidad premium y ofertas especiales. ¡Encuentra tu estilo perfecto aquí y apoya el talento nacional!">
+    <meta name="author" content="Studios Daniels">
+
+    <meta property="og:title" content="Vacano Store Perú - Tu Estilo, Tu Flow Peruano">
+    <meta property="og:description"
+        content="Gorras con diseños únicos, calidad premium y precios inigualables en Perú. Expresa tu personalidad con nuestros exclusivos estilos urbanos y apoya el diseño hecho en casa.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="URL_DE_TU_PAGINA_INICIO_PERU.html">
+    <meta property="og:image" content="URL_DE_IMAGEN_DE_PREVISUALIZACION.jpg">
+    <meta property="og:locale" content="es_PE" id="og-locale-meta">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vacano Store Perú - Tu Estilo, Tu Flow Peruano">
+    <meta name="twitter:description"
+        content="Gorras con diseños únicos, calidad premium y precios inigualables en Perú. Expresa tu personalidad con nuestros exclusivos estilos urbanos y apoya el diseño hecho en casa.">
+    <meta name="twitter:image" content="URL_DE_IMAGEN_DE_PREVISUALIZACION.jpg">
+    <title>Vacano Store - Inicio Perú</title>
+    <link rel="icon" href="imagenes/logo.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/inicio.css">
+    <link rel="stylesheet" href="css/catalogo.css">
+    <style>
+        /* Estilos adicionales para la nueva sección de apartado y envíos */
+        .highlight-section {
+            background-color: var(--color-fondo-secundario);
+            /* O un color que resalte */
+            padding: 50px 20px;
+            /* Aumentado el padding vertical */
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            /* Más espacio entre secciones */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--color-borde);
+        }
+
+        .highlight-section h2 {
+            color: var(--color-primario);
+            margin-bottom: 20px;
+            /* Más espacio debajo del título */
+            font-size: 2.8em;
+            /* Más grande */
+            line-height: 1.2;
+            font-weight: 700;
+            /* Asegura que el título sea negrita */
+        }
+
+        .highlight-section p {
+            color: var(--color-texto-principal);
+            font-size: 1.25em;
+            /* Más grande y legible */
+            line-height: 1.7;
+            /* Mejor interlineado */
+            margin-bottom: 35px;
+            /* Más espacio antes del botón */
+            max-width: 850px;
+            /* Ancho máximo para mejor lectura */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .highlight-section .cta-button-apartado {
+            display: inline-block;
+            background-color: var(--color-primario);
+            color: white;
+            padding: 18px 35px;
+            /* Botón más grande */
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            /* Texto del botón más grande */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            /* Transición para hover */
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            /* Sombra más pronunciada */
+        }
+
+        .highlight-section .cta-button-apartado:hover {
+            background-color: var(--color-primario-oscuro);
+            transform: translateY(-2px);
+            /* Efecto hover sutil */
+        }
+
+        .info-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            /* Más espacio entre las tarjetas */
+            margin-top: 40px;
+            /* Más espacio arriba de la cuadrícula */
+        }
+
+        .info-card {
+            background-color: var(--color-fondo-tarjeta);
+            padding: 30px;
+            /* Más padding interno */
+            border-radius: 10px;
+            /* Bordes más redondeados */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            /* Sombra más suave */
+            text-align: left;
+            border: 1px solid var(--color-borde);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.3s ease;
+            /* Efecto hover para las tarjetas */
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            /* Efecto hover sutil */
+        }
+
+        .info-card i {
+            color: #EEEEEE;
+            /* Un gris muy claro que contrasta bien con fondos oscuros y claros */
+            font-size: 2.8em;
+            /* Íconos aún más grandes */
+            margin-bottom: 20px;
+            /* Más espacio debajo del ícono */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+            /* Sombra más fuerte */
+        }
+
+        .info-card h3 {
+            color: var(--color-texto-principal);
+            margin-bottom: 12px;
+            /* Espacio debajo del título de la tarjeta */
+            font-size: 1.45em;
+            /* Título de tarjeta más grande */
+            font-weight: 600;
+            /* Semi-negrita para el título */
+        }
+
+        .info-card p {
+            color: var(--color-texto-secundario);
+            font-size: 1em;
+            /* Ajustado el tamaño de la fuente para el párrafo */
+            line-height: 1.6;
+            /* Mejor interlineado para el párrafo */
+            flex-grow: 1;
+        }
+
+        /* Estilo para el texto en negrita dentro de info-card y en otros párrafos */
+        p strong {
+            font-weight: bold;
+            /* Asegura que se vea negrita */
+            color: var(--color-texto-principal);
+            /* Utiliza el color principal del texto, que se adapta al tema */
+        }
+
+        /* Estilos generales para títulos de sección */
+        .section-title {
+            color: var(--color-primario);
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .section-title i {
+            margin-right: 15px;
+            font-size: 1em;
+            /* El ícono del título no tan grande como el del info-card */
+            color: var(--color-primario);
+            /* Asegura que el ícono del título sea azul */
+        }
+
+        /* Ajuste para la sección de hero */
+        .hero {
+            padding: 80px 20px;
+            /* Más padding para la sección hero */
+        }
+
+        .hero-content h1 {
+            font-size: 3.8em;
+            /* Título principal más grande */
+            margin-bottom: 25px;
+        }
+
+        .hero-content p {
+            font-size: 1.4em;
+            /* Párrafo principal más grande */
+            max-width: 900px;
+            margin-bottom: 40px;
+        }
+
+        .hero .cta-button {
+            padding: 18px 40px;
+            font-size: 1.25em;
+        }
+
+        /* Ajustes para otras secciones */
+        .featured-collection,
+        .special-offers,
+        .about-section,
+        .contact-section {
+            padding: 60px 20px;
+            /* Padding uniforme para las secciones principales */
+            margin-bottom: 40px;
+            /* Espacio entre secciones */
+        }
+
+        /* CORRECCIÓN PARA LA LÍNEA FEA */
+        /* Eliminar cualquier sombra o borde residual de la última sección antes del footer */
+        .contact-section {
+            box-shadow: none !important;
+            /* Asegura que no tenga sombra inferior */
+            border-bottom: none !important;
+            /* Asegura que no tenga borde inferior */
+            margin-bottom: 0 !important;
+            /* Elimina cualquier margen inferior que pueda crear espacio */
+            padding-bottom: 60px;
+            /* Mantén el padding para el contenido */
+        }
+
+        /* Asegurarse de que el footer no tenga un borde superior no deseado */
+        .footer {
+            border-top: none !important;
+            /* Elimina cualquier borde superior si existe */
+            box-shadow: none !important;
+            /* Elimina cualquier sombra superior si existe */
+            /* Si aún ves la línea, puedes probar con un pequeño margen negativo en el footer, aunque no es lo ideal: */
+            /* margin-top: -1px; */
+        }
+
+        /* FIN CORRECCIÓN */
+
+
+        /* Footer adjustments */
+        .footer-col h3 {
+            margin-bottom: 20px;
+        }
+
+        .footer-col p,
+        .footer-col ul li {
+            line-height: 1.8;
+        }
+
+        .footer-bottom {
+            padding: 25px 0;
+            font-size: 0.95em;
+        }
+
+        .whatsapp-fab {
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            font-size: 2.2em;
+        }
+
+        .scroll-to-top {
+            bottom: 100px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            font-size: 1.8em;
+        }
+
+        /* Media queries para responsividad */
+        @media (max-width: 768px) {
+            .highlight-section h2 {
+                font-size: 2em;
+            }
+
+            .highlight-section p {
+                font-size: 1.1em;
+            }
+
+            .info-cards-grid {
+                grid-template-columns: 1fr;
+                /* Una columna en pantallas pequeñas */
+            }
+
+            .info-card i {
+                font-size: 2.5em;
+            }
+
+            .info-card h3 {
+                font-size: 1.25em;
+            }
+
+            .hero-content h1 {
+                font-size: 2.8em;
+            }
+
+            .hero-content p {
+                font-size: 1.1em;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .whatsapp-fab {
+                width: 55px;
+                height: 55px;
+                font-size: 1.8em;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .scroll-to-top {
+                bottom: 85px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.5em;
+            }
+        }
+    </style>
+    <script>
+        // Mantiene la lógica del tema oscuro/claro antes de cargar common.js
+        (function () {
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'light-mode') {
+                document.documentElement.classList.add('light-mode');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" class="brand-name" aria-label="Ir a la página de inicio">Vacano Store</a>
+                <span class="brand-subtitle">Tienda Online Perú</span>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html">Inicio</a>
+                <a href="catalogo.html">Nuestro Catálogo</a>
+                <a href="#about">Nosotros</a>
+                <a href="#contact">Contacto</a>
+            </nav>
+            <button id="themeToggle" class="theme-toggle" aria-label="Cambiar tema claro/oscuro">
+                <i class="fas fa-sun"></i> Modo Claro
+            </button>
+            <button id="hamburgerMenu" class="hamburger-menu" aria-label="Abrir menú de navegación móvil">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <h1>Tu Estilo y Flow a la mano</h1>
+                <p><span id="country-specific-welcome">¡Bienvenido a Vacano Store Perú!</span> Descubre gorras con
+                    diseños únicos, calidad premium y precios que te encantarán. Expresa tu personalidad con nuestros
+                    exclusivos estilos urbanos, ideales para el ritmo peruano.</p>
+                <a href="catalogo.html" class="cta-button" aria-label="Explorar todo el catálogo de gorras">
+                    Explorar Catálogo <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <section id="apartado-gorras" class="highlight-section">
+            <div class="container">
+                <h2 class="section-title">¡Descubre tu Estilo en Perú! <i class="fas fa-hat-wizard"></i></h2>
+                <p>
+                    ¡Llegamos a Perú para ofrecerte las gorras más exclusivas! En Vacano Store, creemos que tu estilo es
+                    tu sello personal. Explora nuestra colección y encuentra esa gorra perfecta que te hará destacar.
+                    ¡Tenemos variedad y calidad que te encantarán!
+                </p>
+                <a href="catalogo.html" class="cta-button" aria-label="Ver el catálogo de gorras en Perú">
+                    <i class="fas fa-eye"></i> Ver Catálogo Completo
+                </a>
+            </div>
+        </section>
+
+        <section id="featured-products" class="featured-collection">
+            <div class="container">
+                <h2 class="section-title"><i class="fas fa-star"></i> Productos Destacados en Perú</h2>
+                <div class="collection-grid" id="featuredProductsGrid">
+                    <p style="text-align: center; color: var(--color-texto-secundario);">Descubre nuestras gorras más
+                        populares y con más estilo en Perú...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="special-offers" class="special-offers">
+            <div class="container">
+                <h2 class="section-title"><i class="fas fa-tag"></i> Ofertas Especiales para Perú</h2>
+                <div class="offers-grid" id="offerProductsGrid">
+                    <p style="text-align: center; color: var(--color-texto-secundario);">Aprovecha nuestras ofertas
+                        exclusivas, pensadas solo para nuestros clientes en Perú...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="important-info" class="highlight-section"
+            style="background-color: var(--color-fondo-claro); box-shadow: none;">
+            <div class="container">
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> ¡Información Clave para tu Compra en Perú!
+                </h2>
+                <div class="info-cards-grid">
+                    <div class="info-card">
+                        <i class="fas fa-shipping-fast"></i>
+                        <h3>Envíos Rápidos a Nivel Nacional</h3>
+                        <p>Llevamos tu estilo a cada rincón de Perú. Realizamos envíos seguros y eficientes a través de
+                            nuestros aliados comerciales: <strong>Olva Courier</strong> y <strong>Shalom</strong>. Los
+                            pedidos suelen llegar en un plazo estimado de <strong>3 a 7 días hábiles</strong>. ¡Tu gorra
+                            Vacano, directo a tu puerta!</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h3>Diversos Métodos de Pago</h3>
+                        <p>Tu comodidad es nuestra prioridad. Te ofrecemos múltiples opciones para completar tu compra
+                            de forma segura: <strong>Yape</strong>, <strong>Plin</strong>, <strong>Transferencias
+                                Bancarias</strong> (BCP, Interbank) y <strong>Tarjetas de Crédito/Débito</strong> (Visa,
+                            Mastercard). Elige la que mejor se adapte a ti.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Entregas Personales en Lima</h3>
+                        <p>Si te encuentras en <strong>Lima Metropolitana</strong>, puedes coordinar la entrega directa
+                            de tu pedido en un punto conveniente. ¡Una opción rápida y sin costo adicional para los
+                            locales!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container about-content">
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> Sobre Vacano Store en Perú</h2>
+                <p id="about-vacano-store-text">En Vacano Store, somos tu destino online para las gorras más cool y de
+                    alta calidad en Perú. Nos apasiona ofrecerte diseños que reflejen tu personalidad y te hagan
+                    destacar. Creemos en el estilo auténtico y en la comodidad, por eso cada gorra de nuestra colección
+                    está pensada para ti. ¡Únete a la comunidad Vacano y luce tu flow peruano!</p>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <h2 class="section-title"><i class="fas fa-headset"></i> Contáctanos en Perú</h2>
+                <p class="contact-intro">¿Tienes alguna pregunta, necesitas asistencia o quieres saber más sobre
+                    nuestros productos y envíos en Perú? Estamos aquí para ayudarte.</p>
+                <div class="contact-info" id="contact-whatsapp-phone">
+                    <p>Puedes contactarnos directamente vía WhatsApp o por correo electrónico.</p>
+                </div>
+                <a href="https://wa.me/51933450055" id="contact-whatsapp-link" target="_blank"
+                    class="contact-whatsapp-btn" aria-label="Enviar un mensaje de WhatsApp a Vacano Store Perú"
+                    rel="noopener noreferrer">
+                    <i class="fab fa-whatsapp"></i> Envíanos un WhatsApp (Perú)
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-col">
+                <h3>Vacano Store Perú</h3>
+                <p>Tu tienda online de gorras en Perú. Ofrecemos una amplia variedad de estilos y diseños únicos para
+                    que encuentres la gorra perfecta que se adapte a tu personalidad y al estilo vibrante de Perú.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="#about">Nosotros</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col contact-footer">
+                <h3>Contacto en Perú</h3>
+                <p><i class="fas fa-phone"></i> +51 933 450055</p>
+                <p><i class="fas fa-envelope"></i> studiosdanielsve@gmail.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Centro de Lima, Peru</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/vacanostore.pe" target="_blank"
+                        aria-label="Visitar Facebook de Vacano Store Perú" rel="noopener noreferrer"><i
+                            class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/vacano_store_pe" target="_blank"
+                        aria-label="Visitar Instagram de Vacano Store Perú" rel="noopener noreferrer"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/51933450055" target="_blank" aria-label="Contactar por WhatsApp"
+                        rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; <span id="currentYear"></span> Vacano Store. Todos los derechos reservados. Desarrollado por <a
+                    href="https://github.com/StudiosDanilIs" target="_blank" rel="noopener noreferrer"><i
+                        class="fas fa-heart" style="color: rgb(111, 28, 218);"></i> Studios Daniels</a>.</span>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/51933450055" class="whatsapp-fab" target="_blank" aria-label="Contactar por WhatsApp"
+        rel="noopener noreferrer">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <button id="scrollToTopBtn" class="scroll-to-top" aria-label="Volver al inicio de la página">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div id="productModal" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" aria-label="Cerrar ventana de detalles">&times;</span>
+            <div class="galeria-layout">
+                <img id="modal-imagen-principal" src="" alt="Imagen principal del producto">
+                <div class="miniaturas-container">
+                </div>
+            </div>
+            <div class="modal-info-producto">
+                <h2 id="modal-titulo-producto"></h2>
+                <p id="modal-descripcion-producto"></p>
+                <div class="precios-modal">
+                    <span id="modal-precio-original" class="original-price-modal"></span>
+                    <span id="modal-precio-descuento" class="discounted-price-modal"></span>
+                    <span id="modal-descuento-badge" class="descuento-badge-modal"></span>
+                </div>
+                <a href="https://wa.me/51933450055" id="whatsappModalBtn" class="whatsapp-modal-btn" target="_blank"
+                    rel="noopener noreferrer">
+                    <i class="fab fa-whatsapp"></i> Preguntar por WhatsApp (Perú)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="mobileNavOverlay" class="mobile-nav-overlay">
+        <span class="close-mobile-menu" id="closeMobileMenu" aria-label="Cerrar menú móvil">&times;</span>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="#about">Nosotros</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+        <button id="themeToggleMobile" class="theme-toggle" aria-label="Cambiar tema claro/oscuro (móvil)">
+            <i class="fas fa-sun"></i> Modo Claro
+        </button>
+    </div>
+
+    <script src="js/producto.js"></script>
+    <script>
+        // Establecer el año actual en el footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

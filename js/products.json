@@ -1,0 +1,167 @@
+[
+    {
+        "id": "gorra-negra-clasica",
+        "nombre": "Gorra Negra Clásica",
+        "descripcion": "El básico que nunca falla, ideal para cualquier outfit urbano. Ajuste perfecto. Confeccionada con materiales de alta durabilidad y un diseño atemporal que combina con todo. Ideal para uso diario.",
+        "descripcion_corta": "El básico que nunca falla, ideal para cualquier outfit urbano. Ajuste perfecto.",
+        "precio": 75.00,
+        "imagenes": [
+            "/imagenes/1.webp",
+            "/imagenes/2.webp",
+            "/imagenes/4.jpeg"
+        ],
+        "stock": 15,
+        "categoria": "clásicas",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-blanca-minimalista",
+        "nombre": "Gorra Blanca Minimalista",
+        "descripcion": "Estilo puro y limpio, un accesorio imprescindible para un look fresco. Fabricada con algodón transpirable para máxima comodidad, perfecta para los días soleados.",
+        "descripcion_corta": "Estilo puro y limpio, un accesorio imprescindible para un look fresco.",
+        "precio": 80.00,
+        "imagenes": [
+            "/imagenes/3.jpeg"
+        ],
+        "stock": 10,
+        "categoria": "minimalista",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-azul-deportiva",
+        "nombre": "Gorra Azul Deportiva",
+        "descripcion": "Confeccionada para el confort y el estilo en tus actividades diarias. Material ligero y absorbe la humedad, ideal para entrenamientos o para un look casual y activo.",
+        "descripcion_corta": "Confeccionada para el confort y el estilo en tus actividades diarias.",
+        "precio": 90.00,
+        "imagenes": [
+            "/imagenes/4.jpeg"
+        ],
+        "stock": 8,
+        "categoria": "deportiva",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-roja-estilo-retro",
+        "nombre": "Gorra Roja Estilo Retro",
+        "descripcion": "Diseño vibrante con un toque retro. ¡Ideal para destacar! Fabricada con sarga de algodón de alta calidad y un ajuste snapback para mayor comodidad.",
+        "descripcion_corta": "Diseño vibrante con un toque retro. ¡Ideal para destacar!",
+        "precio": 78.75,
+        "precioOriginal": 105.00,
+        "descuento": 25,
+        "imagenes": [
+            "/imagenes/2.jpeg"
+        ],
+        "stock": 5,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-camuflaje-urbana-v1",
+        "nombre": "Gorra Camuflaje Urbana V1",
+        "descripcion": "Perfecta para un look atrevido y moderno. Edición limitada. Su patrón de camuflaje te da un toque distintivo y urbano, ideal para combinar con tu ropa casual.",
+        "descripcion_corta": "Perfecta para un look atrevido y moderno. Edición limitada.",
+        "precio": 105.00,
+        "precioOriginal": 123.53,
+        "descuento": 15,
+        "imagenes": [
+            "/imagenes/2.jpeg",
+            "/imagenes/ss.jpeg"
+        ],
+        "stock": 7,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-camuflaje-urbana-v2",
+        "nombre": "Gorra Camuflaje Urbana V2",
+        "descripcion": "Perfecta para un look atrevido y moderno. Edición limitada. Su patrón de camuflaje te da un toque distintivo y urbano, ideal para combinar con tu ropa casual.",
+        "descripcion_corta": "Perfecta para un look atrevido y moderno. Edición limitada.",
+        "precio": 105.00,
+        "precioOriginal": 123.53,
+        "descuento": 15,
+        "imagenes": [
+            "/imagenes/2.jpeg"
+        ],
+        "stock": 7,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-camuflaje-urbana-v3",
+        "nombre": "Gorra Camuflaje Urbana V3",
+        "descripcion": "Perfecta para un look atrevido y moderno. Edición limitada. Su patrón de camuflaje te da un toque distintivo y urbano, ideal para combinar con tu ropa casual.",
+        "descripcion_corta": "Perfecta para un look atrevido y moderno. Edición limitada.",
+        "precio": 105.00,
+        "precioOriginal": 123.53,
+        "descuento": 15,
+        "imagenes": [
+            "/imagenes/ss.jpeg"
+        ],
+        "stock": 7,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-gris-casual",
+        "nombre": "Gorra Gris Casual",
+        "descripcion": "Un estilo relajado para el día a día. Versátil y cómoda, se adapta a cualquier ocasión. Confección robusta y un diseño limpio que nunca pasa de moda.",
+        "descripcion_corta": "Un estilo relajado para el día a día. Versátil y cómoda.",
+        "precio": 65.00,
+        "imagenes": [
+            "/imagenes/1.jpeg"
+        ],
+        "stock": 20,
+        "categoria": "casual",
+        "destacado": false,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-verde-militar",
+        "nombre": "Gorra Verde Militar",
+        "descripcion": "Ideal para un estilo robusto y aventurero. Diseño duradero y resistente. Perfecta para actividades al aire libre o para un toque urbano con carácter.",
+        "descripcion_corta": "Estilo robusto y aventurero. Diseño duradero.",
+        "precio": 95.00,
+        "imagenes": [
+            "/imagenes/4.jpeg"
+        ],
+        "stock": 12,
+        "categoria": "militar",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-rosa-pastel",
+        "nombre": "Gorra Rosa Pastel",
+        "descripcion": "Un toque suave y moderno para tu look. Material ligero y transpirable. Ideal para quienes buscan un estilo fresco y delicado.",
+        "descripcion_corta": "Toque suave y moderno. Ligera y transpirable.",
+        "precio": 85.00,
+        "imagenes": [
+            "/imagenes/3.jpeg"
+        ],
+        "stock": 9,
+        "categoria": "moda",
+        "destacado": false,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-beige-elegante",
+        "nombre": "Gorra Beige Elegante",
+        "descripcion": "Sofisticación en cada detalle, perfecta para un estilo casual chic. Tela de alta calidad y un ajuste cómodo, ideal para cualquier ocasión.",
+        "descripcion_corta": "Sofisticación en cada detalle. Casual chic.",
+        "precio": 100.00,
+        "imagenes": [
+            "/imagenes/1.jpeg"
+        ],
+        "stock": 6,
+        "categoria": "elegante",
+        "destacado": false,
+        "enOferta": false
+    }
+]
