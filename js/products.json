@@ -1,0 +1,175 @@
+[
+    {
+        "id": "gorra-los-angeles-angels",
+        "nombre": "Gorra Los Angeles",
+        "descripcion": "Gorra Los Angeles Angels PL Ajustable color Azul y Rojo, un clásico atemporal que combina estilo y comodidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para cualquier ocasión, ya sea para un día casual o para animar a tu equipo favorito.",
+        "descripcion_corta": "Gorra Los Angeles Angels PL Ajustable color Azul y Rojo.",
+        "precio": 54.90,
+        "precioOriginal": 69.90,
+        "descuento": 21,
+        "imagenes": [
+            "/imagenes/por_1.jpg",
+            "/imagenes/car_1_1.jpg",
+            "/imagenes/car_1_2.jpg",
+            "/imagenes/car_1_3.jpg"
+        ],
+        "stock": 3,
+        "categoria": "urbana",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-compton",
+        "nombre": "Gorra Compton",
+        "descripcion": "Gorra Compton PL Ajustable color Azul y Blanco, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look urbano y moderno.",
+        "descripcion_corta": "Estilo puro y limpio, un accesorio imprescindible para un look fresco.",
+        "precio": 49.90,
+        "precioOriginal": 64.90,
+        "descuento": 23,
+        "imagenes": [
+            "/imagenes/por_2.jpg",
+            "/imagenes/car_2_1.jpg",
+            "/imagenes/car_2_2.jpg",
+            "/imagenes/car_2_3.jpg"
+        ],
+        "stock": 3,
+        "categoria": "urbano",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-milwaukee-bucks",
+        "nombre": "Gorra Milwaukee Bucks",
+        "descripcion": "Gorra Milwaukee Bucks PL Ajustable color marron y blanco, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Milwaukee Bucks PL Ajustable color marron y blanco.",
+        "precio": 49.00,
+        "imagenes": [
+            "/imagenes/por_3.jpg",
+            "/imagenes/car_3_1.jpg",
+            "/imagenes/car_3_2.jpg"
+        ],
+        "stock": 3,
+        "categoria": "casual",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-brooklin-nets",
+        "nombre": "Gorra Brooklin Nets",
+        "descripcion": "Gorra Brooklin Nets PL Ajustable color Roja, hermosa y elegante, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Brooklin Nets PL Ajustable",
+        "precio": 49.90,
+        "precioOriginal": 79.90,
+        "descuento": 37,
+        "imagenes": [
+            "/imagenes/por_4.jpg",
+            "/imagenes/car_4_1.jpg",
+            "/imagenes/car_4_2.jpg"
+        ],
+        "stock": 4,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-brooklin-nets-plomo",
+        "nombre": "Gorra Brooklin Nets Plomo",
+        "descripcion": "Gorra Brooklin Nets Plomo PL Ajustable color Plomo, ideal para un look atrevido y moderno. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan destacar con un estilo único.",
+        "descripcion_corta": "Gorra Brooklin Nets Plomo PL Ajustable",
+        "precio": 49.90,
+        "imagenes": [
+            "/imagenes/por_5.jpg",
+            "/imagenes/car_5_1.jpg",
+            "/imagenes/car_5_2.jpg"
+        ],
+        "stock": 3,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-los-angeles",
+        "nombre": "Gorra Los Angeles",
+        "descripcion": "Gorra Los Angeles Multicolor PL Ajustable, un clásico atemporal que combina estilo y comodidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para cualquier ocasión, ya sea para un día casual o para animar a tu equipo favorito.",
+        "descripcion_corta": "Gorra Los Angeles Multicolor PL Ajustable.",
+        "precio": 54.90,
+        "precioOriginal": 69.90,
+        "descuento": 21,
+        "imagenes": [
+            "/imagenes/por_6.jpg",
+            "/imagenes/car_6_1.jpg",
+            "/imagenes/car_6_2.jpg"
+            ],
+        "stock": 5,
+        "categoria": "oferta",
+        "destacado": false,
+        "enOferta": true
+    },
+    {
+        "id": "gorra-boston-celtics",
+        "nombre": "Gorra Boston Celtics",
+        "descripcion": "Gorra Boston Celtics PL Ajustable color Verde y Blanco, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Boston Celtics PL Ajustable color Verde y Blanco.",
+        "precio": 49.90,
+        "imagenes": [
+            "/imagenes/por_7.jpg",
+            "/imagenes/car_7_1.jpg",
+            "/imagenes/car_7_2.jpg",
+            "/imagenes/car_7_3.jpg"
+        ],
+        "stock": 2,
+        "categoria": "destacada",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra_chicago_white_sox",
+        "nombre": "Gorra Chicago White Sox",
+        "descripcion": "Gorra Chicago White Sox PL Ajustable color Menta, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Chicago White Sox PL Ajustable",
+        "precio": 54.90,
+        "imagenes": [
+            "/imagenes/por_8.jpg",
+            "/imagenes/car_8_1.jpg",
+            "/imagenes/car_8_2.jpg",
+            "/imagenes/car_8_3.jpg"],
+
+        "stock": 3,
+        "categoria": "elegante",
+        "destacado": true,
+        "enOferta": false
+    },
+    {
+        "id": "gorra_toronto_blue_jays",
+        "nombre": "Gorra Toronto Blue Jays",
+        "descripcion": "Gorra Toronto Blue Jays PL Ajustable Color Marron/Crema, un accesorio que combina estilo y funcionalidad. Confeccionada con materiales de alta calidad, esta gorra es perfecta para quienes buscan un look deportivo y moderno.",
+        "descripcion_corta": "Gorra Toronto Blue Jays PL Ajustable",
+        "precio": 45.90,
+        "imagenes": [
+            "/imagenes/por_9.jpg",
+            "/imagenes/car_9_1.jpg",
+            "/imagenes/car_9_2.jpg"
+        ],
+        "stock": 3,
+        "categoria": "beisbol",
+        "destacado": false,
+        "enOferta": false
+    },
+    {
+        "id": "gorra-memphis-grizzlies-jersey",
+        "nombre": "Gorra Memphis Grizzlies Jersey",
+        "descripcion": "Gorra Memphis Grizzlies Jersey PL Ajustable color Celeste y Negro, siendo un gran modelo moderno y elegante Aprovecha Ahora.",
+        "descripcion_corta": "Gorra Memphis Grizzlies Jersey PL Ajustable.",
+        "precio": 49.00,
+        "imagenes": [
+            "/imagenes/por_10.jpg",
+            "/imagenes/car_10_1.jpg",
+            "/imagenes/car_10_2.jpg",
+            "/imagenes/car_10_3.jpg"
+        ],
+        "stock": 6,
+        "categoria": "moda",
+        "destacado": true,
+        "enOferta": false
+    }
+]
